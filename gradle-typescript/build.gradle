@@ -1,0 +1,75 @@
+/*
+ * (c) Copyright 2021 Felipe Orozco, Robert Kruszewski. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'groovy'
+apply plugin: 'nebula.maven-base-publish'
+apply plugin: 'nebula.maven-manifest'
+apply plugin: 'com.gradle.plugin-publish'
+apply plugin: 'nebula.maven-scm'
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+
+    implementation project(':npm-artifactory-shim')
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-guava'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
+    implementation 'com.google.guava:guava'
+    implementation 'com.palantir.dialogue:dialogue-clients'
+    implementation 'com.palantir.dialogue:dialogue-target'
+    implementation 'com.palantir.safe-logging:preconditions'
+    implementation 'com.palantir.sls-packaging:gradle-recommended-product-dependencies'
+    implementation 'com.palantir.sls-packaging:gradle-sls-packaging'
+    implementation 'io.bit3:jsass'
+    implementation 'org.apache.commons:commons-compress'
+
+    testCompile gradleTestKit()
+    testCompile 'com.netflix.nebula:nebula-test'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'com.github.tomakehurst:wiremock-jre8'
+
+    annotationProcessor 'org.immutables:value'
+    compileOnly 'org.immutables:value::annotations'
+}
+
+tasks.withType(JavaCompile) {
+    options.errorprone.disable 'Slf4jLogsafeArgs'
+}
+
+pluginBundle {
+    website = 'https://gradlets.com'
+    vcsUrl = 'https://github.com/gradlets/gradle-typescript'
+    tags = ['typescript', 'frontend', 'npm', 'yarn']
+}
+
+gradlePlugin {
+    plugins {
+        gradleTypescript {
+            id = 'com.gradlets.typescript'
+            displayName = 'Gradle TypeScript'
+            description = 'TypeScript build tooling for gradle'
+            implementationClass = 'com.gradlets.gradle.typescript.TypeScriptPlugin'
+        }
+    }
+}
+
+tasks.publish.dependsOn tasks.publishPlugins
+publishPlugins.onlyIf { versionDetails().isCleanTag }
+project.ext.'gradle.publish.key' = System.env["GRADLE_KEY"]
+project.ext.'gradle.publish.secret' = System.env["GRADLE_SECRET"]
+

@@ -1,0 +1,9 @@
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra" xmlns:m="http://ant.apache.org/ivy/maven">
+<info organisation="npm" module="foo-artifact" revision="1.0.0"/>
+<publications>
+<artifact name="foo-artifact" ext="tgz" conf="default" type="tgz"/>
+</publications>
+<dependencies>
+
+</dependencies>
+</ivy-module>

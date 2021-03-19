@@ -1,0 +1,210 @@
+{
+  "version" : 1,
+  "errors" : [ ],
+  "types" : [ {
+    "type" : "alias",
+    "alias" : {
+      "typeName" : {
+        "name" : "Data",
+        "package" : "com.gradlets.testservice.api"
+      },
+      "alias" : {
+        "type" : "primitive",
+        "primitive" : "STRING"
+      }
+    }
+  }, {
+    "type" : "object",
+    "object" : {
+      "typeName" : {
+        "name" : "TestServiceResponse",
+        "package" : "com.gradlets.testservice.api"
+      },
+      "fields" : [ {
+        "fieldName" : "message",
+        "type" : {
+          "type" : "primitive",
+          "primitive" : "STRING"
+        }
+      } ]
+    }
+  } ],
+  "services" : [ {
+    "serviceName" : {
+      "name" : "TestServiceService",
+      "package" : "com.gradlets.testservice.api"
+    },
+    "endpoints" : [ {
+      "endpointName" : "demoGetNamespace",
+      "httpMethod" : "GET",
+      "httpPath" : "/storage/{namespace}",
+      "auth" : {
+        "type" : "header",
+        "header" : { }
+      },
+      "args" : [ {
+        "argName" : "namespace",
+        "type" : {
+          "type" : "primitive",
+          "primitive" : "STRING"
+        },
+        "paramType" : {
+          "type" : "path",
+          "path" : { }
+        },
+        "markers" : [ ],
+        "tags" : [ "safe" ]
+      } ],
+      "returns" : {
+        "type" : "list",
+        "list" : {
+          "itemType" : {
+            "type" : "primitive",
+            "primitive" : "RID"
+          }
+        }
+      },
+      "docs" : "An example of endpoint that gets all the keys from a given namespace",
+      "markers" : [ ],
+      "tags" : [ ]
+    }, {
+      "endpointName" : "demoWrite",
+      "httpMethod" : "PUT",
+      "httpPath" : "/storage/{namespace}/{key}",
+      "auth" : {
+        "type" : "header",
+        "header" : { }
+      },
+      "args" : [ {
+        "argName" : "namespace",
+        "type" : {
+          "type" : "primitive",
+          "primitive" : "STRING"
+        },
+        "paramType" : {
+          "type" : "path",
+          "path" : { }
+        },
+        "markers" : [ ],
+        "tags" : [ "safe" ]
+      }, {
+        "argName" : "key",
+        "type" : {
+          "type" : "primitive",
+          "primitive" : "RID"
+        },
+        "paramType" : {
+          "type" : "path",
+          "path" : { }
+        },
+        "markers" : [ ],
+        "tags" : [ "safe" ]
+      }, {
+        "argName" : "value",
+        "type" : {
+          "type" : "reference",
+          "reference" : {
+            "name" : "Data",
+            "package" : "com.gradlets.testservice.api"
+          }
+        },
+        "paramType" : {
+          "type" : "body",
+          "body" : { }
+        },
+        "markers" : [ ],
+        "tags" : [ ]
+      } ],
+      "docs" : "An example endpoint that writes a specified RID.",
+      "markers" : [ ],
+      "tags" : [ ]
+    }, {
+      "endpointName" : "demoRead",
+      "httpMethod" : "GET",
+      "httpPath" : "/storage/{namespace}/{key}",
+      "auth" : {
+        "type" : "header",
+        "header" : { }
+      },
+      "args" : [ {
+        "argName" : "namespace",
+        "type" : {
+          "type" : "primitive",
+          "primitive" : "STRING"
+        },
+        "paramType" : {
+          "type" : "path",
+          "path" : { }
+        },
+        "markers" : [ ],
+        "tags" : [ "safe" ]
+      }, {
+        "argName" : "key",
+        "type" : {
+          "type" : "primitive",
+          "primitive" : "RID"
+        },
+        "paramType" : {
+          "type" : "path",
+          "path" : { }
+        },
+        "markers" : [ ],
+        "tags" : [ "safe" ]
+      } ],
+      "returns" : {
+        "type" : "optional",
+        "optional" : {
+          "itemType" : {
+            "type" : "reference",
+            "reference" : {
+              "name" : "Data",
+              "package" : "com.gradlets.testservice.api"
+            }
+          }
+        }
+      },
+      "docs" : "An example endpoint that reads a specified RID.",
+      "markers" : [ ],
+      "tags" : [ ]
+    }, {
+      "endpointName" : "demoEcho",
+      "httpMethod" : "GET",
+      "httpPath" : "/{rid}",
+      "auth" : {
+        "type" : "header",
+        "header" : { }
+      },
+      "args" : [ {
+        "argName" : "rid",
+        "type" : {
+          "type" : "primitive",
+          "primitive" : "RID"
+        },
+        "paramType" : {
+          "type" : "path",
+          "path" : { }
+        },
+        "markers" : [ ],
+        "tags" : [ "safe" ]
+      } ],
+      "returns" : {
+        "type" : "reference",
+        "reference" : {
+          "name" : "TestServiceResponse",
+          "package" : "com.gradlets.testservice.api"
+        }
+      },
+      "docs" : "An example endpoint that echoes a specified RID.",
+      "markers" : [ ],
+      "tags" : [ ]
+    } ]
+  } ],
+  "extensions" : {
+    "recommended-product-dependencies" : [ {
+      "product-group" : "com.palantir.test-service",
+      "product-name" : "test-service",
+      "minimum-version" : "0.0.0-1-g6bd4a6b",
+      "maximum-version" : "0.x.x"
+    } ]
+  }
+}
