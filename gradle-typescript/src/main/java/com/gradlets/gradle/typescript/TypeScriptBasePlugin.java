@@ -25,9 +25,11 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.attributes.Bundling;
 import org.gradle.api.attributes.Category;
+import org.gradle.api.attributes.LibraryElements;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.SourceDirectorySet;
+import org.gradle.api.internal.artifacts.ArtifactAttributes;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.ReportingBasePlugin;
@@ -129,7 +131,19 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
                     createTsConfigTask.setDescription("Creates vscode tsconfig.json for " + sourceSet.getName());
                     createTsConfigTask
                             .getCompileClasspath()
-                            .set(project.getConfigurations().named(sourceSet.getCompileConfigurationName()));
+                            .from(project.getConfigurations()
+                                    .getByName(sourceSet.getCompileConfigurationName())
+                                    .getIncoming()
+                                    .artifactView(v -> v.getAttributes()
+                                            .attribute(
+                                                    LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
+                                                    project.getObjects()
+                                                            .named(
+                                                                    LibraryElements.class,
+                                                                    TypeScriptAttributes.SOURCE_SCRIPT_DIRS))
+                                            .attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.MODULE))
+                                    .getArtifacts()
+                                    .getArtifactFiles());
                     createTsConfigTask
                             .getSourceDirectories()
                             .set(sourceSet.getSource().getSrcDirs());
@@ -140,7 +154,7 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
                     createTsConfigTask.getCompilerOptions().value(compilerOptions);
                     createTsConfigTask
                             .getTypeRoots()
-                            .from(project.getConfigurations().named(sourceSet.getCompileTypesConfigurationName()));
+                            .from(project.getConfigurations().getByName(sourceSet.getCompileTypesConfigurationName()));
                     createTsConfigTask.getTsConfig().set(project.file("src/" + sourceSet.getName() + "/tsconfig.json"));
                     createTsConfigTask.onlyIf(new Spec<Task>() {
                         @Override

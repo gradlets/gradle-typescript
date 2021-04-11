@@ -19,7 +19,7 @@ package com.gradlets.gradle.typescript;
 import com.gradlets.gradle.typescript.idea.CreateTsConfigTask;
 import com.gradlets.gradle.typescript.idea.GradleTypeScriptRootIdeaPlugin;
 import com.gradlets.gradle.typescript.pdeps.TypeScriptProductDependenciesPlugin;
-import org.gradle.api.NamedDomainObjectContainer;
+import java.util.stream.Collectors;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -32,6 +32,7 @@ import org.gradle.api.attributes.Category;
 import org.gradle.api.attributes.LibraryElements;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.internal.artifacts.ArtifactAttributes;
+import org.gradle.api.internal.artifacts.ConfigurationVariantInternal;
 import org.gradle.api.internal.artifacts.dsl.LazyPublishArtifact;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.BasePlugin;
@@ -176,6 +177,7 @@ public class TypeScriptPlugin implements Plugin<Project> {
         PublishArtifact packageJsonArtifact = new LazyPublishArtifact(generatePackageJson);
         addModule(
                 project,
+                main,
                 project.getConfigurations().getByName(main.getApiElementsConfigurationName()),
                 moduleArtifact,
                 packageJsonArtifact);
@@ -191,6 +193,7 @@ public class TypeScriptPlugin implements Plugin<Project> {
 
     private static void addModule(
             Project project,
+            SourceSet mainSourceSet,
             Configuration configuration,
             PublishArtifact moduleArtifact,
             PublishArtifact packageJsonArtifact) {
@@ -204,8 +207,7 @@ public class TypeScriptPlugin implements Plugin<Project> {
                         project.getObjects().named(LibraryElements.class, TypeScriptAttributes.MODULE));
         moduleVariant.artifact(moduleArtifact);
 
-        NamedDomainObjectContainer<ConfigurationVariant> runtimeVariants = publications.getVariants();
-        ConfigurationVariant resourcesVariant = runtimeVariants.create("package-json");
+        ConfigurationVariant resourcesVariant = publications.getVariants().create("package-json");
         resourcesVariant.getAttributes().attribute(ArtifactAttributes.ARTIFACT_FORMAT, "package-json");
         resourcesVariant
                 .getAttributes()
@@ -213,5 +215,16 @@ public class TypeScriptPlugin implements Plugin<Project> {
                         LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
                         project.getObjects().named(LibraryElements.class, TypeScriptAttributes.PACKAGE_JSON));
         resourcesVariant.artifact(packageJsonArtifact);
+
+        ConfigurationVariantInternal variant = (ConfigurationVariantInternal)
+                configuration.getOutgoing().getVariants().create("source-script-dirs");
+        variant.getAttributes().attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.MODULE);
+        variant.getAttributes()
+                .attribute(
+                        LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
+                        project.getObjects().named(LibraryElements.class, TypeScriptAttributes.SOURCE_SCRIPT_DIRS));
+        variant.artifactsProvider(() -> mainSourceSet.getSource().getSourceDirectories().getFiles().stream()
+                .map(sourceScriptDir -> new LazyPublishArtifact(project.provider(() -> sourceScriptDir)))
+                .collect(Collectors.toUnmodifiableList()));
     }
 }

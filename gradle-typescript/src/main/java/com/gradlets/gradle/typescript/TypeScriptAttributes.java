@@ -30,4 +30,9 @@ public interface TypeScriptAttributes {
      * Ued with {@link org.gradle.api.attributes.LibraryElements}.
      */
     String PACKAGE_JSON = "package-json";
+
+    /**
+     * Ued with {@link org.gradle.api.attributes.LibraryElements}.
+     */
+    String SOURCE_SCRIPT_DIRS = "source-script-dirs";
 }
