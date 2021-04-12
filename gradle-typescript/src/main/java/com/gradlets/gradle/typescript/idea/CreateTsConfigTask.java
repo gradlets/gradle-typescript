@@ -80,7 +80,7 @@ public abstract class CreateTsConfigTask extends DefaultTask {
 
     @TaskAction
     public final void generateTsConfig() throws IOException {
-        Set<File> dependenciesFiles = getCompileClasspath()
+        Set<File> externalDependencyFiles = getCompileClasspath()
                 .filter(element -> !element.getAbsolutePath()
                         .startsWith(
                                 getProject().getRootProject().getProjectDir().getAbsolutePath()))
@@ -110,7 +110,7 @@ public abstract class CreateTsConfigTask extends DefaultTask {
                                 .collect(Collectors.toUnmodifiableSet()),
                         getOutputDir().get().toPath(),
                         projectDepsFiles,
-                        dependenciesFiles,
+                        externalDependencyFiles,
                         getTypeRoots().getFiles(),
                         getCompilerOptions().get()));
     }
