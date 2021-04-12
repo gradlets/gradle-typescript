@@ -218,7 +218,6 @@ public class TypeScriptPlugin implements Plugin<Project> {
 
         ConfigurationVariantInternal variant = (ConfigurationVariantInternal)
                 configuration.getOutgoing().getVariants().create("source-script-dirs");
-        variant.getAttributes().attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.MODULE);
         variant.getAttributes()
                 .attribute(
                         LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
