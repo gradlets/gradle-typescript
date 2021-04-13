@@ -27,7 +27,8 @@ public interface TypeScriptAttributes {
     String MODULE = "module";
 
     /**
-     * Used with {@link org.gradle.api.attributes.LibraryElements}.
+     * Used with {@link org.gradle.api.internal.artifacts.ArtifactAttributes}
+     * and {@link org.gradle.api.attributes.LibraryElements}.
      */
     String PACKAGE_JSON = "package-json";
 
