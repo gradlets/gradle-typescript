@@ -28,6 +28,7 @@ import org.gradle.api.attributes.Category;
 import org.gradle.api.attributes.LibraryElements;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.SourceDirectorySet;
 import org.gradle.api.internal.artifacts.ArtifactAttributes;
 import org.gradle.api.model.ObjectFactory;
@@ -134,21 +135,19 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
                 .register(sourceSet.getCreateTsConfigTaskName(), CreateTsConfigTask.class, createTsConfigTask -> {
                     createTsConfigTask.setGroup(LifecycleBasePlugin.BUILD_TASK_NAME);
                     createTsConfigTask.setDescription("Creates vscode tsconfig.json for " + sourceSet.getName());
-                    createTsConfigTask
-                            .getCompileClasspath()
-                            .from(project.getConfigurations()
-                                    .getByName(sourceSet.getCompileConfigurationName())
-                                    .getIncoming()
-                                    .artifactView(v -> v.getAttributes()
-                                            .attribute(
-                                                    LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
-                                                    project.getObjects()
-                                                            .named(
-                                                                    LibraryElements.class,
-                                                                    TypeScriptAttributes.SOURCE_SCRIPT_DIRS))
-                                            .attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.MODULE))
-                                    .getArtifacts()
-                                    .getArtifactFiles());
+                    FileCollection configClasspathh = project.getConfigurations()
+                            .getByName(sourceSet.getCompileConfigurationName())
+                            .getIncoming()
+                            .artifactView(v -> {
+                                LibraryElements sourceScriptDirs = project.getObjects()
+                                        .named(LibraryElements.class, TypeScriptAttributes.SOURCE_SCRIPT_DIRS);
+                                v.getAttributes()
+                                        .attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, sourceScriptDirs)
+                                        .attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.MODULE);
+                            })
+                            .getArtifacts()
+                            .getArtifactFiles();
+                    createTsConfigTask.getCompileClasspath().from(configClasspathh);
                     createTsConfigTask
                             .getSourceDirectories()
                             .set(sourceSet.getSource().getSrcDirs());
