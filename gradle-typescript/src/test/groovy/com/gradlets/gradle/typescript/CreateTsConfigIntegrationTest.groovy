@@ -121,7 +121,11 @@ class CreateTsConfigIntegrationTest extends IntegrationSpec {
         Map<String, Set<String>> paths = (ObjectMappers.MAPPER.readValue(
                 file('third/src/test/tsconfig.json'), TsConfig.class)
                 .compilerOptions()
-                .get("paths") as Map<String, Set<String>>)
+                .get('paths') as Map<String, Set<String>>)
         paths.containsKey('conjure-client')
+        ['first', 'second', 'third'].forEach {
+            paths.containsKey(it)
+            paths.containsKey(it + "/*")
+        }
     }
 }

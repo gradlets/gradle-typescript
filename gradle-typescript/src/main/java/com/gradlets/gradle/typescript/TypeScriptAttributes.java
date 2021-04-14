@@ -27,7 +27,13 @@ public interface TypeScriptAttributes {
     String MODULE = "module";
 
     /**
-     * Ued with {@link org.gradle.api.attributes.LibraryElements}.
+     * Used with {@link org.gradle.api.internal.artifacts.ArtifactAttributes}
+     * and {@link org.gradle.api.attributes.LibraryElements}.
      */
     String PACKAGE_JSON = "package-json";
+
+    /**
+     * Used with {@link org.gradle.api.attributes.LibraryElements}.
+     */
+    String SOURCE_SCRIPT_DIRS = "source-script-dirs";
 }
