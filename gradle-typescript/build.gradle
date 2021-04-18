@@ -43,6 +43,7 @@ dependencies {
     testImplementation 'com.github.tomakehurst:wiremock-jre8'
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
 
     annotationProcessor 'org.immutables:value'
     compileOnly 'org.immutables:value::annotations'
