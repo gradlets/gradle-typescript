@@ -29,6 +29,7 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.MapProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
@@ -40,6 +41,9 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.util.GFileUtils;
 
 public abstract class JestTestTask extends SourceTask {
+    @Input
+    abstract Property<String> getPreset();
+
     @Classpath
     abstract ConfigurableFileCollection getClasspath();
 
@@ -81,14 +85,14 @@ public abstract class JestTestTask extends SourceTask {
     private Map<String, Object> createJestConfig() throws IOException {
         ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
         builder.put("rootDir", getProject().getProjectDir().getAbsolutePath());
+        builder.put("preset", getPreset().get());
         builder.put(
                 "globals",
                 // Pure hack wrt location of tsconfig
                 ImmutableMap.of(
                         "ts-jest",
                         ImmutableMap.of(
-                                "tsConfigFile",
-                                getTsconfigFile().get().getAsFile().getAbsolutePath())));
+                                "tsconfig", getTsconfigFile().get().getAsFile().getAbsolutePath())));
         // Required to specify js, jsx since the whitelist applies to all modules (including dependencies)
         builder.put("moduleFileExtensions", ImmutableList.of("js", "jsx", "ts", "tsx"));
         builder.put("testEnvironment", "node");

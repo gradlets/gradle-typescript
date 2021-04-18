@@ -47,11 +47,11 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
         project.getPluginManager().apply(NpmBasePlugin.class);
         project.getPluginManager().apply(ReportingBasePlugin.class);
 
-        TypeScriptPluginExtension typeScriptPluginExtension = addExtensions(project);
+        TypeScriptPluginExtension typeScriptPluginExtension = addTypeScriptExtension(project);
         configureSourceSetDefaults(project, typeScriptPluginExtension);
     }
 
-    private TypeScriptPluginExtension addExtensions(Project project) {
+    private TypeScriptPluginExtension addTypeScriptExtension(Project project) {
         TypeScriptPluginExtension typeScriptPluginExtension = DefaultTypeScriptPluginExtension.register(project);
         project.getExtensions()
                 .add(SourceSetContainer.class, "typeScriptSourceSets", typeScriptPluginExtension.getSourceSets());

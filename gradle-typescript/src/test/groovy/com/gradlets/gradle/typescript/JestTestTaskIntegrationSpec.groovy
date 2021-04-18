@@ -33,16 +33,22 @@ class JestTestTaskIntegrationSpec extends IntegrationSpec {
         """.stripIndent()
     }
 
-    def "executes jest"() {
+    def 'executes jest'() {
         when:
         buildFile << """
         dependencies {
             testDeps 'npm:jest:26.6.3'
+            testDeps 'npm:ts-jest:26.5.5'
+            testDeps 'npm:typescript:4.2.3'
+            testTypes 'npm:types/jest:26.0.22'
         }
         """.stripIndent()
         file("src/test/typescript/foo.ts") << '''
             describe("foo", () => {
-                it("runs a test", () => {});
+                it("runs a test", () => {
+                    // @ts-ignore
+                    const test: string = "hello world";
+                });
             });
         '''.stripIndent()
 

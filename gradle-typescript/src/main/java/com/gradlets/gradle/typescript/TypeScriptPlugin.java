@@ -49,14 +49,16 @@ public class TypeScriptPlugin implements Plugin<Project> {
         project.getPluginManager().apply(TypeScriptBasePlugin.class);
         project.getRootProject().getPluginManager().apply(GradleTypeScriptRootIdeaPlugin.class);
 
-        TypeScriptPluginExtension pluginExtension = project.getExtensions().getByType(TypeScriptPluginExtension.class);
+        TypeScriptPluginExtension typeScriptPluginExtension =
+                project.getExtensions().getByType(TypeScriptPluginExtension.class);
         PackageJsonExtension packageJsonExtension =
                 project.getExtensions().create(PackageJsonExtension.EXTENSION_NAME, PackageJsonExtension.class);
+        JestExtension jestExtension = DefaultJestExtension.register(project);
 
-        configureSourceSets(project, pluginExtension);
-        configureTest(project, pluginExtension);
-        configureConfigurations(project, pluginExtension);
-        configureArchivesAndComponent(project, packageJsonExtension, pluginExtension);
+        configureSourceSets(project, typeScriptPluginExtension);
+        configureTest(project, typeScriptPluginExtension, jestExtension);
+        configureConfigurations(project, typeScriptPluginExtension);
+        configureArchivesAndComponent(project, packageJsonExtension, typeScriptPluginExtension);
         configureIdeIntegration(project);
 
         project.getPluginManager().apply(TypeScriptProductDependenciesPlugin.class);
@@ -69,39 +71,19 @@ public class TypeScriptPlugin implements Plugin<Project> {
         project.getDependencies().add(test.getCompileConfigurationName(), project);
     }
 
-    private static void configureTest(Project project, TypeScriptPluginExtension pluginExtension) {
+    private static void configureTest(
+            Project project, TypeScriptPluginExtension pluginExtension, JestExtension jestExtension) {
         SourceSet testSourceSet = pluginExtension.getSourceSets().getByName("test");
         TaskProvider<CreateTsConfigTask> testTsconfig =
                 project.getTasks().named(testSourceSet.getCreateTsConfigTaskName(), CreateTsConfigTask.class);
-        project.getConfigurations()
-                .named(testSourceSet.getCompileConfigurationName())
-                .configure(conf -> {
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:types/node:14.6.2"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies()
-                                    .getConstraints()
-                                    .create("npm:types/istanbul-lib-report:3.0.0"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:types/yargs-parser:20.2.0"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:types/babel__generator:7.6.2"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:types/babel__template:7.4.0"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:inherits:2.0.4"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:wrappy:1.0.2"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:source-map-support:0.5.19"));
-                });
+        JestTestSupport.addDependencyConstraints(project, testSourceSet);
         Provider<JestTestTask> test = project.getTasks().register("jestTest", JestTestTask.class, task -> {
             task.setDescription("Runs the unit tests.");
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
             task.setSource(testSourceSet.getSource());
             task.getOutputDir().set(testSourceSet.getSource().getClassesDirectory());
             task.getTsconfigFile().set(testTsconfig.flatMap(CreateTsConfigTask::getTsConfig));
-
+            task.getPreset().set(jestExtension.getPreset());
             task.getClasspath().from(testSourceSet.getCompileClasspath());
         });
 
