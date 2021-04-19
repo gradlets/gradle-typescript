@@ -46,7 +46,7 @@ pluginBundle {
 gradlePlugin {
     plugins {
         conjureTypescriptLocal {
-            id = 'com.gradles.conjure-typescript-local'
+            id = 'com.gradlets.conjure-typescript-local'
             displayName = 'Gradle Conjure TypeScript Local'
             description = 'Conjure TypeScript generators compatible with gradle typescript'
             implementationClass = 'com.gradlets.gradle.typescript.conjure.ConjureTypeScriptLocalCodegenPlugin'
