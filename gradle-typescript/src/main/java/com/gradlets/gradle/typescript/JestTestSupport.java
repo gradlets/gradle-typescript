@@ -20,40 +20,41 @@ import java.util.Set;
 import org.gradle.api.Project;
 
 public final class JestTestSupport {
+    private static final Set<String> COORDINATES_TO_CONSTRAINT = Set.of(
+            "npm:types/node:14.6.2",
+            "npm:types/istanbul-lib-report:3.0.0",
+            "npm:types/yargs-parser:20.2.0",
+            "npm:types/babel__generator:7.6.2",
+            "npm:types/babel__template:7.4.0",
+            "npm:inherits:2.0.4",
+            "npm:wrappy:1.0.2",
+            "npm:source-map-support:0.5.19",
+            "npm:bs-logger:0.2.6",
+            "npm:fast-json-stable-stringify:2.1.0",
+            "npm:semver:7.3.5",
+            "npm:json5:2.2.0",
+            "npm:make-error:1.3.6",
+            "npm:mkdirp:1.0.4",
+            "npm:yargs-parser:20.2.7",
+            "npm:lodash:4.17.21",
+            "npm:buffer-from:1.1.1");
+
+    private static final Set<String> TYPES_COORDINATES_TO_CONSTRAINT =
+            Set.of("npm:types/yargs-parser:20.2.0", "npm:types/istanbul-lib-report:3.0.0");
 
     private JestTestSupport() {}
 
     static void addDependencyConstraints(Project project, SourceSet testSourceSet) {
-        Set<String> coordinatesToConstraint = Set.of(
-                "npm:types/node:14.6.2",
-                "npm:types/istanbul-lib-report:3.0.0",
-                "npm:types/yargs-parser:20.2.0",
-                "npm:types/babel__generator:7.6.2",
-                "npm:types/babel__template:7.4.0",
-                "npm:inherits:2.0.4",
-                "npm:wrappy:1.0.2",
-                "npm:source-map-support:0.5.19",
-                "npm:bs-logger:0.2.6",
-                "npm:fast-json-stable-stringify:2.1.0",
-                "npm:semver:7.3.5",
-                "npm:json5:2.2.0",
-                "npm:make-error:1.3.6",
-                "npm:mkdirp:1.0.4",
-                "npm:yargs-parser:20.2.7",
-                "npm:lodash:4.17.21",
-                "npm:buffer-from:1.1.1");
-        Set<String> typesCoordinatesToConstraint =
-                Set.of("npm:types/yargs-parser:20.2.0", "npm:types/istanbul-lib-report:3.0.0");
         project.getConfigurations()
                 .named(testSourceSet.getCompileConfigurationName())
                 .configure(conf -> {
-                    coordinatesToConstraint.forEach(coord -> conf.getDependencyConstraints()
+                    COORDINATES_TO_CONSTRAINT.forEach(coord -> conf.getDependencyConstraints()
                             .add(project.getDependencies().getConstraints().create(coord)));
                 });
         project.getConfigurations()
                 .named(testSourceSet.getCompileTypesConfigurationName())
                 .configure(conf -> {
-                    typesCoordinatesToConstraint.forEach(coord -> conf.getDependencyConstraints()
+                    TYPES_COORDINATES_TO_CONSTRAINT.forEach(coord -> conf.getDependencyConstraints()
                             .add(project.getDependencies().getConstraints().create(coord)));
                 });
     }
