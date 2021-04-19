@@ -16,6 +16,7 @@
 
 package com.gradlets.gradle.typescript;
 
+import java.util.Set;
 import org.gradle.api.Project;
 
 public final class JestTestSupport {
@@ -23,57 +24,37 @@ public final class JestTestSupport {
     private JestTestSupport() {}
 
     static void addDependencyConstraints(Project project, SourceSet testSourceSet) {
+        Set<String> coordinatesToConstraint = Set.of(
+                "npm:types/node:14.6.2",
+                "npm:types/istanbul-lib-report:3.0.0",
+                "npm:types/yargs-parser:20.2.0",
+                "npm:types/babel__generator:7.6.2",
+                "npm:types/babel__template:7.4.0",
+                "npm:inherits:2.0.4",
+                "npm:wrappy:1.0.2",
+                "npm:source-map-support:0.5.19",
+                "npm:bs-logger:0.2.6",
+                "npm:fast-json-stable-stringify:2.1.0",
+                "npm:semver:7.3.5",
+                "npm:json5:2.2.0",
+                "npm:make-error:1.3.6",
+                "npm:mkdirp:1.0.4",
+                "npm:yargs-parser:20.2.7",
+                "npm:lodash:4.17.21",
+                "npm:buffer-from:1.1.1");
+        Set<String> typesCoordinatesToConstraint =
+                Set.of("npm:types/yargs-parser:20.2.0", "npm:types/istanbul-lib-report:3.0.0");
         project.getConfigurations()
                 .named(testSourceSet.getCompileConfigurationName())
                 .configure(conf -> {
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:types/node:14.6.2"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies()
-                                    .getConstraints()
-                                    .create("npm:types/istanbul-lib-report:3.0.0"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:types/yargs-parser:20.2.0"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:types/babel__generator:7.6.2"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:types/babel__template:7.4.0"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:inherits:2.0.4"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:wrappy:1.0.2"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:source-map-support:0.5.19"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:bs-logger:0.2.6"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies()
-                                    .getConstraints()
-                                    .create("npm:fast-json-stable-stringify:2.1.0"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:semver:7.3.5"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:json5:2.2.0"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:make-error:1.3.6"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:mkdirp:1.0.4"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:yargs-parser:20.2.7"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:lodash:4.17.21"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:buffer-from:1.1.1"));
+                    coordinatesToConstraint.forEach(coord -> conf.getDependencyConstraints()
+                            .add(project.getDependencies().getConstraints().create(coord)));
                 });
         project.getConfigurations()
                 .named(testSourceSet.getCompileTypesConfigurationName())
                 .configure(conf -> {
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies().getConstraints().create("npm:types/yargs-parser:20.2.0"));
-                    conf.getDependencyConstraints()
-                            .add(project.getDependencies()
-                                    .getConstraints()
-                                    .create("npm:types/istanbul-lib-report:3.0.0"));
+                    typesCoordinatesToConstraint.forEach(coord -> conf.getDependencyConstraints()
+                            .add(project.getDependencies().getConstraints().create(coord)));
                 });
     }
 }
