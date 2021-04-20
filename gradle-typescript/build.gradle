@@ -35,6 +35,7 @@ dependencies {
     implementation 'com.palantir.sls-packaging:gradle-recommended-product-dependencies'
     implementation 'com.palantir.sls-packaging:gradle-sls-packaging'
     implementation 'io.bit3:jsass'
+    implementation 'io.undertow:undertow-core'
     implementation 'org.apache.commons:commons-compress'
 
     testCompile gradleTestKit()
