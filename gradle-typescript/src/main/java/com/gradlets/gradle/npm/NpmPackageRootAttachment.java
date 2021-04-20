@@ -19,7 +19,7 @@ package com.gradlets.gradle.npm;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.gradlets.gradle.typescript.shim.ImmutablesStyle;
+import com.gradlets.gradle.ImmutablesStyle;
 import com.palantir.conjure.java.lib.Bytes;
 import org.immutables.value.Value;
 

@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package com.gradlets.gradle.typescript.shim;
+package com.gradlets.gradle.typescript.shim.cache;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.gradlets.gradle.ImmutablesStyle;
 import org.immutables.value.Value;
 
-@Target({ElementType.PACKAGE, ElementType.TYPE})
-@Retention(RetentionPolicy.SOURCE)
-@Value.Style(visibility = Value.Style.ImplementationVisibility.PACKAGE, overshadowImplementation = true)
-public @interface ImmutablesStyle {}
+@Value.Immutable
+@ImmutablesStyle
+public interface NpmArtifactKey {
+    String packageName();
+
+    String version();
+
+    static Builder builder() {
+        return new Builder();
+    }
+
+    class Builder extends ImmutableNpmArtifactKey.Builder {}
+}
