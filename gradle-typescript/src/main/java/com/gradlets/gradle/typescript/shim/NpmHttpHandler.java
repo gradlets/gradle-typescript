@@ -16,7 +16,6 @@
 
 package com.gradlets.gradle.typescript.shim;
 
-import com.gradlets.gradle.typescript.shim.cache.DescriptorLoader;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.PathTemplateMatch;
@@ -24,10 +23,10 @@ import java.util.Map;
 
 public final class NpmHttpHandler implements HttpHandler {
     private final ScopedNpmHttpHandler.ScopedRequestHandler delegate;
-    private final DescriptorLoader descriptorLoader;
+    private final PackageJsonLoader packageJsonLoader;
 
-    public NpmHttpHandler(DescriptorLoader descriptorLoader, ScopedNpmHttpHandler.ScopedRequestHandler delegate) {
-        this.descriptorLoader = descriptorLoader;
+    public NpmHttpHandler(PackageJsonLoader packageJsonLoader, ScopedNpmHttpHandler.ScopedRequestHandler delegate) {
+        this.packageJsonLoader = packageJsonLoader;
         this.delegate = delegate;
     }
 
@@ -36,7 +35,7 @@ public final class NpmHttpHandler implements HttpHandler {
         Map<String, String> parameters =
                 exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY).getParameters();
         delegate.handleRequest(
-                descriptorLoader,
+                packageJsonLoader,
                 exchange,
                 parameters.get(IvyPatterns.PACKAGE_NAME),
                 parameters.get(IvyPatterns.PACKAGE_VERSION));

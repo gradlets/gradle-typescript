@@ -114,11 +114,15 @@ class NpmPackageIntegrationSpec extends IntegrationSpec {
         """.stripIndent() + buildFile.text
         buildFile << """
             dependencies {
+                deps 'npm:blueprintjs/core'
                 deps 'npm:conjure-client'
             }
         """.stripIndent()
         file('versions.props') << """
         npm:conjure-client = ${Versions.CONJURE_CLIENT}
+        npm:blueprintjs/core = 3.23.1
+        npm:classnames = 2.3.1
+        npm:js-tokens = 6.0.0
         """.stripIndent()
 
         then:
@@ -129,7 +133,7 @@ class NpmPackageIntegrationSpec extends IntegrationSpec {
         def packageJson = loadPackageJson()
         packageJson.name == moduleName
         packageJson.version == '1.0.0'
-        packageJson.dependencies == [ 'conjure-client': '>=' + Versions.CONJURE_CLIENT ]
+        packageJson.dependencies == [ 'conjure-client': '>=' + Versions.CONJURE_CLIENT, '@blueprintjs/core': '>=3.23.1' ]
     }
 
     def 'adds project dependencies to packageJson'() {

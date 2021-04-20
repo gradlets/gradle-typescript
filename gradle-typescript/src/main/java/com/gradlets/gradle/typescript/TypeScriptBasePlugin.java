@@ -93,11 +93,6 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
         compileConfiguration
                 .getAttributes()
                 .attribute(Category.CATEGORY_ATTRIBUTE, objectFactory.named(Category.class, Category.LIBRARY));
-        compileConfiguration
-                .getAttributes()
-                .attribute(
-                        LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
-                        objectFactory.named(LibraryElements.class, TypeScriptAttributes.MODULE));
         // TODO(forozco): propogate type dependencies
         sourceSet.getCompileClasspath().from(compileConfiguration);
 

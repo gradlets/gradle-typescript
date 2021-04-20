@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gradlets.gradle.typescript.shim.cache;
+package com.gradlets.gradle.typescript.shim;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;

@@ -17,7 +17,7 @@
 package com.gradlets.gradle.npm;
 
 import com.gradlets.gradle.typescript.ObjectMappers;
-import com.gradlets.gradle.typescript.shim.cache.IvyDescriptors;
+import com.gradlets.gradle.typescript.shim.IvyDescriptors;
 import com.gradlets.gradle.typescript.shim.clients.PackageJson;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
