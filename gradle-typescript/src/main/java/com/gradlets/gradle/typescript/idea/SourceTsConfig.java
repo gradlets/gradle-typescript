@@ -16,7 +16,7 @@
 
 package com.gradlets.gradle.typescript.idea;
 
-import com.gradlets.gradle.typescript.shim.ImmutablesStyle;
+import com.gradlets.gradle.ImmutablesStyle;
 import java.nio.file.Path;
 import org.immutables.value.Value;
 

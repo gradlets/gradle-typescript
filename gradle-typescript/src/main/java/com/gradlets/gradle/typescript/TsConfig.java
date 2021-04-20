@@ -18,7 +18,7 @@ package com.gradlets.gradle.typescript;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.gradlets.gradle.typescript.shim.ImmutablesStyle;
+import com.gradlets.gradle.ImmutablesStyle;
 import java.util.Map;
 import java.util.Set;
 import org.immutables.value.Value;

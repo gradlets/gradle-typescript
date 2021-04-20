@@ -14,21 +14,44 @@
  * limitations under the License.
  */
 
-package com.gradlets.gradle.typescript.shim.cache;
+package com.gradlets.gradle.typescript.shim.clients;
 
-import com.gradlets.gradle.typescript.shim.ImmutablesStyle;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gradlets.gradle.ImmutablesStyle;
+import java.util.Map;
 import org.immutables.value.Value;
 
 @Value.Immutable
 @ImmutablesStyle
-public interface NpmArtifactKey {
-    String packageName();
+@JsonDeserialize(as = ImmutablePackageJson.class)
+@JsonSerialize(as = ImmutablePackageJson.class)
+public interface PackageJson {
+    String name();
 
     String version();
+
+    Map<String, String> dependencies();
+
+    Dist dist();
 
     static Builder builder() {
         return new Builder();
     }
 
-    class Builder extends ImmutableNpmArtifactKey.Builder {}
+    class Builder extends ImmutablePackageJson.Builder {}
+
+    @Value.Immutable
+    @JsonDeserialize(as = ImmutableDist.class)
+    interface Dist {
+        String tarball();
+
+        String shasum();
+
+        static Builder builder() {
+            return new Builder();
+        }
+
+        class Builder extends ImmutableDist.Builder {}
+    }
 }
