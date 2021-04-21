@@ -17,7 +17,6 @@
 package com.gradlets.gradle.typescript.shim.cache;
 
 import com.gradlets.gradle.ImmutablesStyle;
-import com.gradlets.gradle.typescript.shim.clients.PackageJson;
 import java.util.function.Supplier;
 import org.immutables.value.Value;
 
@@ -29,8 +28,6 @@ public interface CachedDescriptor {
     Supplier<String> ivySha1Checksum();
 
     Supplier<String> ivyDescriptor();
-
-    Supplier<PackageJson> packageJson();
 
     static Builder builder() {
         return new Builder();

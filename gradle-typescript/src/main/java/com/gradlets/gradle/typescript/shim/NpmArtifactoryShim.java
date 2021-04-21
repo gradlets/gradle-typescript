@@ -59,7 +59,7 @@ public final class NpmArtifactoryShim {
         PackageJsonLoader packageJsonLoader = new PackageJsonLoader(uri);
         DescriptorLoader descriptorLoader = new DescriptorLoader(descriptorCache, packageJsonLoader);
         ProxyHandler proxyHandler = ProxyHandler.builder()
-                .setProxyClient(getProxyClient(uri, descriptorLoader))
+                .setProxyClient(getProxyClient(uri, packageJsonLoader))
                 .setMaxRequestTime(30000)
                 .setRewriteHostHeader(true)
                 .build();
@@ -155,11 +155,12 @@ public final class NpmArtifactoryShim {
         }
     }
 
-    private static ProxyClient getProxyClient(String uri, DescriptorLoader packageJsonCache) {
+    private static ProxyClient getProxyClient(String uri, PackageJsonLoader packageJsonLoader) {
         Xnio instance = Xnio.getInstance();
         try {
             return new NpmProxyClient(
-                    packageJsonCache,
+                    uri,
+                    packageJsonLoader,
                     new LoadBalancingProxyClient()
                             .addHost(URI.create(uri), new UndertowXnioSsl(instance, OptionMap.EMPTY))
                             .setConnectionsPerThread(20));

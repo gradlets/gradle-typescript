@@ -18,7 +18,6 @@ package com.gradlets.gradle.typescript.shim.cache;
 
 import com.google.common.hash.Hashing;
 import com.gradlets.gradle.typescript.shim.PackageJsonLoader;
-import com.gradlets.gradle.typescript.shim.clients.PackageJson;
 import java.nio.charset.StandardCharsets;
 
 public final class DescriptorLoader {
@@ -38,15 +37,14 @@ public final class DescriptorLoader {
                 .version(packageVersion)
                 .build();
         return ivyDescriptorCache.getMetadata(cacheKey).orElseGet(() -> {
-            PackageJson packageJson = packageJsonLoader.getPackageJson(packageName, packageVersion);
-            String ivyDescriptor = IvyDescriptors.createDescriptor("npm", packageJson);
+            String ivyDescriptor = IvyDescriptors.createDescriptor(
+                    "npm", packageJsonLoader.getPackageJson(packageName, packageVersion));
             CachedDescriptor cachedDescriptor = CachedDescriptor.builder()
                     .ivySha1Checksum(() -> Hashing.sha1()
                             .hashBytes(ivyDescriptor.getBytes(StandardCharsets.UTF_8))
                             .toString())
                     .cacheKey(cacheKey)
                     .ivyDescriptor(() -> ivyDescriptor)
-                    .packageJson(() -> packageJson)
                     .build();
             ivyDescriptorCache.storeMetadata(cachedDescriptor);
             return cachedDescriptor;

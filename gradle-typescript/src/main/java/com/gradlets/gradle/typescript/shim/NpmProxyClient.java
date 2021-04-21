@@ -16,8 +16,9 @@
 
 package com.gradlets.gradle.typescript.shim;
 
-import com.gradlets.gradle.typescript.shim.cache.DescriptorLoader;
 import com.gradlets.gradle.typescript.shim.clients.PackageJson;
+import com.palantir.logsafe.Preconditions;
+import com.palantir.logsafe.SafeArg;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.proxy.ProxyCallback;
 import io.undertow.server.handlers.proxy.ProxyClient;
@@ -25,11 +26,13 @@ import io.undertow.server.handlers.proxy.ProxyConnection;
 import java.util.concurrent.TimeUnit;
 
 public final class NpmProxyClient implements ProxyClient {
-    private final DescriptorLoader descriptorLoader;
+    private final PackageJsonLoader packageJsonLoader;
     private final ProxyClient delegate;
+    private final String baseUrl;
 
-    public NpmProxyClient(DescriptorLoader descriptorLoader, ProxyClient delegate) {
-        this.descriptorLoader = descriptorLoader;
+    public NpmProxyClient(String baseUrl, PackageJsonLoader packageJsonLoader, ProxyClient delegate) {
+        this.baseUrl = baseUrl;
+        this.packageJsonLoader = packageJsonLoader;
         this.delegate = delegate;
     }
 
@@ -46,12 +49,19 @@ public final class NpmProxyClient implements ProxyClient {
             long timeout,
             TimeUnit timeUnit) {
         IvyPatterns.parseArtifactPath(exchange.getRelativePath()).ifPresent(moduleIdentifier -> {
-            PackageJson packageJson = descriptorLoader
-                    .getIvyDescriptor(moduleIdentifier.packageName(), moduleIdentifier.packageVersion())
-                    .packageJson()
-                    .get();
-            exchange.setRequestURI(packageJson.dist().tarball(), true);
+            PackageJson packageJson =
+                    packageJsonLoader.getPackageJson(moduleIdentifier.packageName(), moduleIdentifier.packageVersion());
+            exchange.setRequestURI(stripBaseUrl(packageJson.dist().tarball()), true);
         });
         delegate.getConnection(target, exchange, callback, timeout, timeUnit);
+    }
+
+    private String stripBaseUrl(String path) {
+        Preconditions.checkArgument(
+                path.startsWith(baseUrl),
+                "Path must start with baseUrl",
+                SafeArg.of("path", path),
+                SafeArg.of("baseUrl", baseUrl));
+        return path.substring(baseUrl.length());
     }
 }

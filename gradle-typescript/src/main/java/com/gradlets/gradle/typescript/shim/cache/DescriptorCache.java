@@ -16,11 +16,6 @@
 
 package com.gradlets.gradle.typescript.shim.cache;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.gradlets.gradle.typescript.shim.clients.PackageJson;
 import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeRuntimeException;
 import java.io.IOException;
@@ -33,12 +28,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public final class DescriptorCache {
-    private static final ObjectMapper MAPPER =
-            new ObjectMapper().registerModule(new GuavaModule()).registerModule(new Jdk8Module());
-
     private static final String IVY_DESCRIPTOR_NAME = "descriptor.ivy";
     private static final String IVY_SHA_NAME = "descriptor.ivy.sha1";
-    private static final String PACKAGE_JSON_NAME = "package.json";
     private final Path cacheLocation;
 
     public DescriptorCache(Path cacheLocation) {
@@ -53,13 +44,6 @@ public final class DescriptorCache {
             writeToFile(
                     cacheDir.resolve(IVY_SHA_NAME),
                     descriptor.ivySha1Checksum().get().getBytes(StandardCharsets.UTF_8));
-            try {
-                writeToFile(
-                        cacheDir.resolve(PACKAGE_JSON_NAME),
-                        MAPPER.writeValueAsBytes(descriptor.packageJson().get()));
-            } catch (JsonProcessingException e) {
-                throw new SafeRuntimeException("Unable to serialize package.json", e);
-            }
         }
     }
 
@@ -67,8 +51,7 @@ public final class DescriptorCache {
         Path cacheDir = resolveCacheDir(metadataKey);
         Path ivyFilePath = cacheDir.resolve(IVY_DESCRIPTOR_NAME);
         Path ivySha1ChecksumPath = cacheDir.resolve(IVY_SHA_NAME);
-        Path packageJsonPath = cacheDir.resolve(PACKAGE_JSON_NAME);
-        if (!Files.exists(ivyFilePath) || !Files.exists(ivySha1ChecksumPath) || !Files.exists(packageJsonPath)) {
+        if (!Files.exists(ivyFilePath) || !Files.exists(ivySha1ChecksumPath)) {
             return Optional.empty();
         }
 
@@ -76,16 +59,6 @@ public final class DescriptorCache {
                 .cacheKey(metadataKey)
                 .ivyDescriptor(() -> readStringContents(ivyFilePath))
                 .ivySha1Checksum(() -> readStringContents(ivySha1ChecksumPath))
-                .packageJson(() -> {
-                    try {
-                        return MAPPER.readValue(packageJsonPath.toFile(), PackageJson.class);
-                    } catch (IOException e) {
-                        throw new SafeRuntimeException(
-                                "Failed to read package.json from {}",
-                                e,
-                                SafeArg.of("package.json", packageJsonPath.toString()));
-                    }
-                })
                 .build());
     }
 
