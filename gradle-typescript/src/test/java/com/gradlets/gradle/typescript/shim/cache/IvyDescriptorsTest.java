@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gradlets.gradle.typescript.shim;
+package com.gradlets.gradle.typescript.shim.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

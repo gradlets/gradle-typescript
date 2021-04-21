@@ -16,8 +16,9 @@
 
 package com.gradlets.gradle.typescript.shim;
 
-import com.google.common.hash.Hashing;
-import com.gradlets.gradle.typescript.shim.clients.PackageJson;
+import com.gradlets.gradle.typescript.shim.cache.CachedDescriptor;
+import com.gradlets.gradle.typescript.shim.cache.DescriptorCache;
+import com.gradlets.gradle.typescript.shim.cache.DescriptorLoader;
 import com.palantir.conjure.java.api.errors.UnknownRemoteException;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
@@ -32,7 +33,6 @@ import io.undertow.util.HttpString;
 import java.io.Closeable;
 import java.net.BindException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -55,7 +55,9 @@ public final class NpmArtifactoryShim {
     }
 
     public static ShimServer startServer(String uri) {
+        DescriptorCache descriptorCache = new DescriptorCache(ShimConfiguration.getCacheDir());
         PackageJsonLoader packageJsonLoader = new PackageJsonLoader(uri);
+        DescriptorLoader descriptorLoader = new DescriptorLoader(descriptorCache, packageJsonLoader);
         ProxyHandler proxyHandler = ProxyHandler.builder()
                 .setProxyClient(getProxyClient(uri, packageJsonLoader))
                 .setMaxRequestTime(30000)
@@ -67,19 +69,19 @@ public final class NpmArtifactoryShim {
                 .add(
                         "HEAD",
                         IvyPatterns.IVY_DESCRIPTOR_TEMPLATE,
-                        new ScopedNpmHttpHandler(packageJsonLoader, NpmArtifactoryShim::handleHeadIvyDescriptor))
+                        new ScopedNpmHttpHandler(descriptorLoader, NpmArtifactoryShim::handleHeadIvyDescriptor))
                 .add(
                         "HEAD",
                         "/{packageName}/{packageVersion}/descriptor.ivy",
-                        new NpmHttpHandler(packageJsonLoader, NpmArtifactoryShim::handleHeadIvyDescriptor))
+                        new NpmHttpHandler(descriptorLoader, NpmArtifactoryShim::handleHeadIvyDescriptor))
                 .add(
                         "GET",
                         IvyPatterns.IVY_DESCRIPTOR_TEMPLATE,
-                        new ScopedNpmHttpHandler(packageJsonLoader, NpmArtifactoryShim::handleGetIvyDescriptor))
+                        new ScopedNpmHttpHandler(descriptorLoader, NpmArtifactoryShim::handleGetIvyDescriptor))
                 .add(
                         "GET",
                         "/{packageName}/{packageVersion}/descriptor.ivy",
-                        new NpmHttpHandler(packageJsonLoader, NpmArtifactoryShim::handleGetIvyDescriptor))
+                        new NpmHttpHandler(descriptorLoader, NpmArtifactoryShim::handleGetIvyDescriptor))
                 .setFallbackHandler(proxyHandler);
 
         do {
@@ -117,19 +119,14 @@ public final class NpmArtifactoryShim {
     }
 
     private static void handleHeadIvyDescriptor(
-            PackageJsonLoader packageJsonLoader,
-            HttpServerExchange exchange,
-            String packageName,
-            String packageVersion) {
+            DescriptorLoader descriptorLoader, HttpServerExchange exchange, String packageName, String packageVersion) {
         try {
-            PackageJson packageJson = packageJsonLoader.getPackageJson(packageName, packageVersion);
-            String descriptor = IvyDescriptors.createDescriptor("npm", packageJson);
-            String sha1Etag = Hashing.sha1()
-                    .hashBytes(descriptor.getBytes(StandardCharsets.UTF_8))
-                    .toString();
+            CachedDescriptor cachedDescriptor = descriptorLoader.getIvyDescriptor(packageName, packageVersion);
+            String sha1Etag = cachedDescriptor.ivySha1Checksum().get();
             exchange.getResponseHeaders().put(HttpString.tryFromString("X-Checksum-Sha1"), sha1Etag);
             exchange.getResponseHeaders().put(HttpString.tryFromString("ETag"), String.format("{SHA1{%s}}", sha1Etag));
-            exchange.setResponseContentLength(descriptor.length());
+            exchange.setResponseContentLength(
+                    cachedDescriptor.ivyDescriptor().get().length());
             exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/xml");
             exchange.setStatusCode(200);
         } catch (RuntimeException t) {
@@ -138,21 +135,16 @@ public final class NpmArtifactoryShim {
     }
 
     private static void handleGetIvyDescriptor(
-            PackageJsonLoader packageJsonLoader,
-            HttpServerExchange exchange,
-            String packageName,
-            String packageVersion) {
+            DescriptorLoader descriptorLoader, HttpServerExchange exchange, String packageName, String packageVersion) {
         try {
-            PackageJson packageJson = packageJsonLoader.getPackageJson(packageName, packageVersion);
-            String descriptor = IvyDescriptors.createDescriptor("npm", packageJson);
-            String sha1Etag = Hashing.sha1()
-                    .hashBytes(descriptor.getBytes(StandardCharsets.UTF_8))
-                    .toString();
+            CachedDescriptor cachedDescriptor = descriptorLoader.getIvyDescriptor(packageName, packageVersion);
+            String sha1Etag = cachedDescriptor.ivySha1Checksum().get();
             exchange.getResponseHeaders().put(HttpString.tryFromString("X-Checksum-Sha1"), sha1Etag);
             exchange.getResponseHeaders().put(HttpString.tryFromString("ETag"), String.format("{SHA1{%s}}", sha1Etag));
             exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/xml");
-            exchange.setResponseContentLength(descriptor.length());
-            exchange.getResponseSender().send(descriptor);
+            String content = cachedDescriptor.ivyDescriptor().get();
+            exchange.setResponseContentLength(content.length());
+            exchange.getResponseSender().send(content);
         } catch (RuntimeException t) {
             if (t instanceof UnknownRemoteException && ((UnknownRemoteException) t).getStatus() == 404) {
                 exchange.setStatusCode(404);

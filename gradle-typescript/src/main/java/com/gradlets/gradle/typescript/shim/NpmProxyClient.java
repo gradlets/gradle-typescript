@@ -51,7 +51,7 @@ public final class NpmProxyClient implements ProxyClient {
         IvyPatterns.parseArtifactPath(exchange.getRelativePath()).ifPresent(moduleIdentifier -> {
             PackageJson packageJson =
                     packageJsonLoader.getPackageJson(moduleIdentifier.packageName(), moduleIdentifier.packageVersion());
-            exchange.setRequestURI(stripBaseUrl(packageJson.dist().tarball()), true);
+            exchange.setRequestURI(packageJson.dist().tarball(), true);
         });
         delegate.getConnection(target, exchange, callback, timeout, timeUnit);
     }

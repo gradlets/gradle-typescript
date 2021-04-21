@@ -16,6 +16,7 @@
 
 package com.gradlets.gradle.typescript.shim;
 
+import com.gradlets.gradle.typescript.shim.cache.DescriptorLoader;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.PathTemplateMatch;
@@ -23,10 +24,10 @@ import java.util.Map;
 
 public final class ScopedNpmHttpHandler implements HttpHandler {
     private final ScopedRequestHandler delegate;
-    private final PackageJsonLoader packageJsonLoader;
+    private final DescriptorLoader descriptorLoader;
 
-    public ScopedNpmHttpHandler(PackageJsonLoader packageJsonLoader, ScopedRequestHandler delegate) {
-        this.packageJsonLoader = packageJsonLoader;
+    public ScopedNpmHttpHandler(DescriptorLoader descriptorLoader, ScopedRequestHandler delegate) {
+        this.descriptorLoader = descriptorLoader;
         this.delegate = delegate;
     }
 
@@ -35,12 +36,12 @@ public final class ScopedNpmHttpHandler implements HttpHandler {
         Map<String, String> parameters =
                 exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY).getParameters();
         String scopedName = "@" + parameters.get("packageScope") + "/" + parameters.get("packageName");
-        delegate.handleRequest(packageJsonLoader, exchange, scopedName, parameters.get("packageVersion"));
+        delegate.handleRequest(descriptorLoader, exchange, scopedName, parameters.get("packageVersion"));
     }
 
     interface ScopedRequestHandler {
         void handleRequest(
-                PackageJsonLoader packageJsonLoader,
+                DescriptorLoader descriptorLoader,
                 HttpServerExchange exchange,
                 String packageName,
                 String packageVersion);
