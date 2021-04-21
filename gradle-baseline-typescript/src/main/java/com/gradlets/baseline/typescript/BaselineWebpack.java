@@ -62,7 +62,7 @@ public final class BaselineWebpack implements Plugin<Project> {
                                     .toString());
                 });
 
-        project.getTasks().named(WebpackPlugin.BUNDLE_WEBPACK_TASK_NAME, WebpackTask.class, bundleWebpack -> {
+        project.getTasks().withType(WebpackTask.class, bundleWebpack -> {
             bundleWebpack.dependsOn(generateWebpackConfig);
         });
 
@@ -74,6 +74,7 @@ public final class BaselineWebpack implements Plugin<Project> {
         project.getDependencies().add(WebpackPlugin.WEBPACK_CONFIGURATION_NAME, "npm:source-map-loader:4.0.0");
         project.getDependencies().add(WebpackPlugin.WEBPACK_CONFIGURATION_NAME, "npm:webpack:5.74.0");
         project.getDependencies().add(WebpackPlugin.WEBPACK_CONFIGURATION_NAME, "npm:webpack-cli:4.7.0");
+        project.getDependencies().add(WebpackPlugin.WEBPACK_CONFIGURATION_NAME, "npm:webpack-dev-server:4.10.1");
 
         webpack.getDependencyConstraints()
                 .add(project.getDependencies().getConstraints().create("npm:types/eslint:8.4.5"));

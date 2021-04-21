@@ -45,5 +45,9 @@ module.exports = {
         minimize: false,
         usedExports: false
     },
+    devServer: {
+        contentBase: __OUTPUT_DIR__,
+        port: 8089
+    },
     target: "node",
 };

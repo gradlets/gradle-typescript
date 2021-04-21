@@ -33,6 +33,7 @@ public final class WebpackPlugin implements Plugin<Project> {
     public static final String WEBPACK_CONFIGURATION_NAME = "webpack";
     public static final String WEBPACK_OUTGOING_CONFIGURATION_NAME = "webpackOutgoing";
     public static final String BUNDLE_WEBPACK_TASK_NAME = "bundleWebpack";
+    public static final String WEBPACK_DEV_SERVER = "webpackDevServer";
 
     @Override
     public void apply(Project project) {
@@ -47,17 +48,18 @@ public final class WebpackPlugin implements Plugin<Project> {
                 project.getConfigurations().getByName(mainSourceSet.getCompileConfigurationName());
         WebpackExtension webpackExtension = WebpackExtension.create(project);
 
-        TaskProvider<WebpackTask> bundleWebpackTask = project.getTasks()
-                .register(BUNDLE_WEBPACK_TASK_NAME, WebpackTask.class, task -> {
-                    task.getOutputDirectory().set(webpackExtension.getOutputDir());
-                    task.getWebpackClasspath().set(webpackClasspath);
-                    task.getCompileClasspath().set(compileClasspath);
-                    task.getWebpackConfigFile().set(webpackExtension.getConfigFile());
+        TaskProvider<WebpackTask> bundleWebpackTask = WebpackTask.register(
+                project, BUNDLE_WEBPACK_TASK_NAME, webpackExtension, compileClasspath, webpackClasspath, task -> {
+                    task.dependsOn(mainSourceSet.getCompileTypeScriptTaskName());
                     task.getSourceFiles()
                             .from(project.getTasks().getByName(mainSourceSet.getCompileTypeScriptTaskName()));
-
-                    task.dependsOn(mainSourceSet.getCompileTypeScriptTaskName());
                 });
+
+        TaskProvider<WebpackTask> webpackServer = WebpackTask.register(
+                project, WEBPACK_DEV_SERVER, webpackExtension, compileClasspath, webpackClasspath, task -> {
+                    task.getArgs().add("serve");
+                });
+
         createWebpackOutgoingConfiguration(project, bundleWebpackTask);
     }
 
