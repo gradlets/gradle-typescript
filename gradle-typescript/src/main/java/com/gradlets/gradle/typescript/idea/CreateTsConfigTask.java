@@ -16,6 +16,7 @@
 
 package com.gradlets.gradle.typescript.idea;
 
+import com.google.common.collect.ImmutableSet;
 import com.gradlets.gradle.typescript.ObjectMappers;
 import com.gradlets.gradle.typescript.TypeScriptConfigs;
 import java.io.File;
@@ -110,8 +111,10 @@ public abstract class CreateTsConfigTask extends DefaultTask {
                                 .collect(Collectors.toUnmodifiableSet()),
                         getOutputDir().get().toPath(),
                         projectDepsFiles,
-                        externalDependencyFiles,
-                        getTypeRoots().getFiles(),
+                        ImmutableSet.<File>builder()
+                                .addAll(externalDependencyFiles)
+                                .addAll(getTypeRoots().getFiles())
+                                .build(),
                         getCompilerOptions().get()));
     }
 }

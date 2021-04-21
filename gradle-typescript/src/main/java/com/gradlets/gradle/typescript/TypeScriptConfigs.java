@@ -35,15 +35,10 @@ public final class TypeScriptConfigs {
     // Need to create tsconfig.json since not all options can be specified through the CLI
     // https://github.com/microsoft/TypeScript/blob/eac073894b172ec719ca7f28b0b94fc6e6e7d4cf/src/compiler/commandLineParser.ts#L631
     public static TsConfig createGradleTsConfig(
-            Path outputDir,
-            Set<File> sourceFiles,
-            Set<File> dependencies,
-            Set<File> typeRoots,
-            Map<String, Object> compilerOptions) {
+            Path outputDir, Set<File> sourceFiles, Set<File> dependencies, Map<String, Object> compilerOptions) {
         return TsConfig.builder()
                 .files(sourceFiles.stream().map(File::getAbsolutePath).collect(ImmutableSet.toImmutableSet()))
-                .putAllCompilerOptions(
-                        buildCompilerOptions(outputDir, Map.of(), dependencies, typeRoots, compilerOptions))
+                .putAllCompilerOptions(buildCompilerOptions(outputDir, Map.of(), dependencies, compilerOptions))
                 .build();
     }
 
@@ -52,13 +47,12 @@ public final class TypeScriptConfigs {
             Path outputDir,
             Map<String, List<Path>> projectDependencies,
             Set<File> dependencies,
-            Set<File> typeRoots,
             Map<String, Object> compilerOptions) {
         return TsConfig.builder()
                 .addAllInclude(
                         sourceDirectories.stream().map(dir -> dir + "/**/*").collect(Collectors.toUnmodifiableSet()))
                 .putAllCompilerOptions(
-                        buildCompilerOptions(outputDir, projectDependencies, dependencies, typeRoots, compilerOptions))
+                        buildCompilerOptions(outputDir, projectDependencies, dependencies, compilerOptions))
                 .build();
     }
 
@@ -66,13 +60,11 @@ public final class TypeScriptConfigs {
             Path outputDir,
             Map<String, List<Path>> projectDependencies,
             Set<File> dependencies,
-            Set<File> typeRoots,
             Map<String, Object> compilerOptions) {
         checkValidOptions(compilerOptions);
 
         return ImmutableMap.<String, Object>builder()
                 .putAll(compilerOptions)
-                .put("typeRoots", typeRoots.stream().map(File::getAbsolutePath).collect(ImmutableSet.toImmutableSet()))
                 .put("outDir", outputDir.toAbsolutePath().toString())
                 .put("declaration", true)
                 .put("baseUrl", ".")
@@ -87,9 +79,15 @@ public final class TypeScriptConfigs {
 
     private static Map<String, List<String>> getClassPathAsPaths(Set<File> dependencies) {
         return expandPathsWithWildcards(dependencies.stream()
+                .map(File::toPath)
+                .map(artifact -> NpmConfigurations.getTypesPackageNameFromArtifact(artifact)
+                        .map(targetPackage -> Map.entry(
+                                targetPackage,
+                                artifact.resolve(artifact.getFileName()).toAbsolutePath()))
+                        .orElseGet(() -> Map.entry(
+                                NpmConfigurations.getPackageNameFromArtifact(artifact), artifact.toAbsolutePath())))
                 .collect(Collectors.groupingBy(
-                        artifact -> NpmConfigurations.getPackageNameFromArtifact(artifact.toPath()),
-                        Collectors.mapping(File::toPath, Collectors.toList()))));
+                        Map.Entry::getKey, Collectors.mapping(Map.Entry::getValue, Collectors.toUnmodifiableList()))));
     }
 
     private static Map<String, List<String>> expandPathsWithWildcards(Map<String, List<Path>> dependencies) {

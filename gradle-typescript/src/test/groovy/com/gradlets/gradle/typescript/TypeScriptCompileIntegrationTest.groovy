@@ -233,6 +233,28 @@ class TypeScriptCompileIntegrationTest extends IntegrationSpec {
         result.wasExecuted(':bar:compileTypeScript')
     }
 
+    def 'supports @types packages'() {
+        when:
+        buildFile << """
+        typeScript {
+            compilerOptions.put("noImplicitAny", true)
+        }
+
+        dependencies {
+            deps 'npm:react:${Versions.REACT}'
+
+            types 'npm:types/react:${Versions.REACT}'
+            types 'npm:types/prop-types:${Versions.PROP_TYPES}'
+        }
+        """.stripIndent()
+        file("src/main/typescript/index.ts") << '''
+            import * as React from "react";
+        '''.stripIndent()
+
+        then:
+        def result = runTasksSuccessfully("compileTypeScript")
+    }
+
     def 'handles user provided compilerOptions'() {
         when:
         buildFile << '''

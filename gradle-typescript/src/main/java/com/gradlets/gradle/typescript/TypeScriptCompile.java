@@ -16,6 +16,7 @@
 
 package com.gradlets.gradle.typescript;
 
+import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
@@ -88,8 +89,10 @@ public class TypeScriptCompile extends SourceTask {
                 TypeScriptConfigs.createGradleTsConfig(
                         outputDir.get().getAsFile().toPath(),
                         getSource().getFiles(),
-                        classpath.getFiles(),
-                        typeRoots.getFiles(),
+                        ImmutableSet.<File>builder()
+                                .addAll(classpath.getFiles())
+                                .addAll(typeRoots.getFiles())
+                                .build(),
                         compilerOptions.get()));
 
         ExecResult execResult = getProject().exec(execSpec -> {
