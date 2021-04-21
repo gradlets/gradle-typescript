@@ -17,7 +17,12 @@
 package com.gradlets.gradle.npm;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import com.palantir.logsafe.exceptions.SafeIllegalStateException;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -27,6 +32,8 @@ public final class NpmConfigurations {
     private static final Logger log = LoggerFactory.getLogger(NpmConfigurations.class);
     private static final Pattern VERSION_PATTERN =
             Pattern.compile("^(?<baseName>.*?)-(\\d+(?:\\.\\d+)*(?:-\\d+)?(?:-g[0-9a-f]+)?(?:\\.dirty)?)$");
+    // In accordance with https://github.com/microsoft/TypeScript/issues/14819
+    private static final Splitter TYPES_SPLITTER = Splitter.on("__");
 
     @VisibleForTesting
     static String extractBaseName(String fileName) {
@@ -42,6 +49,20 @@ public final class NpmConfigurations {
         }
 
         return baseName;
+    }
+
+    public static Optional<String> getTypesPackageNameFromArtifact(Path artifact) {
+        if (artifact.getParent().getFileName().toString().equals("@types")) {
+            List<String> components =
+                    TYPES_SPLITTER.splitToList(artifact.getFileName().toString());
+            if (components.size() == 2) {
+                return Optional.of("@" + String.join("/", components));
+            } else if (components.size() == 1) {
+                return Optional.of(Iterables.getOnlyElement(components));
+            }
+            throw new SafeIllegalStateException("This should never happen");
+        }
+        return Optional.empty();
     }
 
     public static String getPackageNameFromArtifact(Path artifact) {

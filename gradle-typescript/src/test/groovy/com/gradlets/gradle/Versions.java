@@ -20,6 +20,8 @@ public final class Versions {
     public static final String CONJURE_CLIENT = "2.4.1";
     public static final String TYPESCRIPT = "3.7.5";
     public static final String JEST_TYPES = "22.2.0";
+    public static final String REACT = "16.8.3";
+    public static final String PROP_TYPES = "15.7.3";
 
     private Versions() {}
 }

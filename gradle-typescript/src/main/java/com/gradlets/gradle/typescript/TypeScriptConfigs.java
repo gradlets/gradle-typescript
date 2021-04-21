@@ -79,7 +79,10 @@ public final class TypeScriptConfigs {
                 .put(
                         "paths",
                         ImmutableMap.builder()
-                                .putAll(getClassPathAsPaths(dependencies))
+                                .putAll(getClassPathAsPaths(ImmutableSet.<File>builder()
+                                        .addAll(dependencies)
+                                        .addAll(typeRoots)
+                                        .build()))
                                 .putAll(expandPathsWithWildcards(projectDependencies))
                                 .build())
                 .build();
@@ -87,9 +90,15 @@ public final class TypeScriptConfigs {
 
     private static Map<String, List<String>> getClassPathAsPaths(Set<File> dependencies) {
         return expandPathsWithWildcards(dependencies.stream()
+                .map(File::toPath)
+                .map(artifact -> NpmConfigurations.getTypesPackageNameFromArtifact(artifact)
+                        .map(targetPackage -> Map.entry(
+                                targetPackage,
+                                artifact.resolve(artifact.getFileName()).toAbsolutePath()))
+                        .orElseGet(() -> Map.entry(
+                                NpmConfigurations.getPackageNameFromArtifact(artifact), artifact.toAbsolutePath())))
                 .collect(Collectors.groupingBy(
-                        artifact -> NpmConfigurations.getPackageNameFromArtifact(artifact.toPath()),
-                        Collectors.mapping(File::toPath, Collectors.toList()))));
+                        Map.Entry::getKey, Collectors.mapping(Map.Entry::getValue, Collectors.toUnmodifiableList()))));
     }
 
     private static Map<String, List<String>> expandPathsWithWildcards(Map<String, List<Path>> dependencies) {
