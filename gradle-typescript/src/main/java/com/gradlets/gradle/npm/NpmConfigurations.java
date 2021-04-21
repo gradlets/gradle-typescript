@@ -32,6 +32,7 @@ public final class NpmConfigurations {
     private static final Logger log = LoggerFactory.getLogger(NpmConfigurations.class);
     private static final Pattern VERSION_PATTERN =
             Pattern.compile("^(?<baseName>.*?)-(\\d+(?:\\.\\d+)*(?:-\\d+)?(?:-g[0-9a-f]+)?(?:\\.dirty)?)$");
+    // In accordance with https://github.com/microsoft/TypeScript/issues/14819
     private static final Splitter TYPES_SPLITTER = Splitter.on("__");
 
     @VisibleForTesting
