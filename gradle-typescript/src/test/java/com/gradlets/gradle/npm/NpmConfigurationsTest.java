@@ -35,32 +35,31 @@ public class NpmConfigurationsTest {
 
     @Test
     void file_to_package() {
-        assertThat(NpmConfigurations.getPackageNameFromArtifact(Paths.get(
-                        "/Users/forozco/.gradle/caches/transforms-3/f62fd608b95c387c8f085fc0a5f8ae62/transformed/react-dom-16.8"
-                                + ".3/react-dom")))
+        assertThat(NpmConfigurations.getPackageNameFromArtifact(Paths.get("/Users/forozco/.gradle/caches/transforms-3/"
+                        + "f62fd608b95c387c8f085fc0a5f8ae62/transformed/react-dom-16.8.3/react-dom")))
                 .isEqualTo("react-dom");
-        assertThat(NpmConfigurations.getPackageNameFromArtifact(Paths.get(
-                        "/Users/forozco/.gradle/caches/transforms-3/d6fb9b5f2f27e61664e9f75880b5d612/transformed/types/react-16.8"
-                                + ".3/@types/react")))
+        assertThat(NpmConfigurations.getPackageNameFromArtifact(Paths.get("/Users/forozco/.gradle/caches/transforms-3/"
+                        + "d6fb9b5f2f27e61664e9f75880b5d612/transformed/types/react-16.8.3/@types/react")))
                 .isEqualTo("@types/react");
-        assertThat(NpmConfigurations.getPackageNameFromArtifact(Paths.get(
-                        "/Users/forozco/.gradle/caches/transforms-3/0440a9ba8e020d1463bd6cb975acc5eb/transformed/types"
-                                + "/google__maps-0.5.14/@types/google__maps")))
+        assertThat(NpmConfigurations.getPackageNameFromArtifact(Paths.get("/Users/forozco/.gradle/caches/transforms-3/"
+                        + "0440a9ba8e020d1463bd6cb975acc5eb/transformed/types/"
+                        + "google__maps-0.5.14/@types/google__maps")))
                 .isEqualTo("@types/google__maps");
     }
 
     @Test
     void extract_types_package() {
-        assertThat(NpmConfigurations.getTypesPackageNameFromArtifact(Paths.get(
-                        "/Users/forozco/.gradle/caches/transforms-3/f62fd608b95c387c8f085fc0a5f8ae62/transformed/react-dom-16.8"
-                                + ".3/react-dom")))
+        assertThat(NpmConfigurations.getTypesPackageNameFromArtifact(
+                        Paths.get("/Users/forozco/.gradle/caches/transforms-3/"
+                                + "f62fd608b95c387c8f085fc0a5f8ae62/transformed/react-dom-16.8.3/react-dom")))
                 .isEmpty();
-        assertThat(NpmConfigurations.getTypesPackageNameFromArtifact(Paths.get(
-                        "/Users/forozco/.gradle/caches/transforms-3/d6fb9b5f2f27e61664e9f75880b5d612/transformed/types/react-16.8"
-                                + ".3/@types/react")))
+        assertThat(NpmConfigurations.getTypesPackageNameFromArtifact(
+                        Paths.get("/Users/forozco/.gradle/caches/transforms-3/"
+                                + "d6fb9b5f2f27e61664e9f75880b5d612/transformed/types/react-16.8.3/@types/react")))
                 .hasValue("react");
-        assertThat(NpmConfigurations.getTypesPackageNameFromArtifact(Paths.get(
-                        "/Users/forozco/.gradle/caches/transforms-3/0440a9ba8e020d1463bd6cb975acc5eb/transformed/types"
+        assertThat(NpmConfigurations.getTypesPackageNameFromArtifact(
+                        Paths.get("/Users/forozco/.gradle/caches/transforms-3/"
+                                + "0440a9ba8e020d1463bd6cb975acc5eb/transformed/types"
                                 + "/google__maps-0.5.14/@types/google__maps")))
                 .hasValue("@google/maps");
     }
