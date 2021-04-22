@@ -27,6 +27,7 @@ import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 
@@ -36,6 +37,9 @@ public abstract class WebpackTask extends DefaultTask {
 
     @Classpath
     abstract Property<Configuration> getCompileClasspath();
+
+    @InputFiles
+    abstract ConfigurableFileCollection getSourceFiles();
 
     @InputFile
     abstract RegularFileProperty getWebpackConfigFile();
