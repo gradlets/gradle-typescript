@@ -46,8 +46,15 @@ module.exports = {
         usedExports: false
     },
     devServer: {
-        contentBase: __OUTPUT_DIR__,
+        dev: {
+            publicPath: "/build"
+        },
+        static: {
+            directory: "<projectDir>/build/static",
+            serveIndex: true,
+            watch: true
+        },
         port: 8089
     },
-    target: "node",
+    target: "web",
 };

@@ -55,7 +55,7 @@ public final class WebpackPlugin implements Plugin<Project> {
                             .from(project.getTasks().getByName(mainSourceSet.getCompileTypeScriptTaskName()));
                 });
 
-        TaskProvider<WebpackTask> webpackServer = WebpackTask.register(
+        WebpackTask.register(
                 project, WEBPACK_DEV_SERVER, webpackExtension, compileClasspath, webpackClasspath, task -> {
                     task.getArgs().add("serve");
                 });

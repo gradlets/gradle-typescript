@@ -80,6 +80,8 @@ public abstract class WebpackTask extends DefaultTask {
             execSpec.executable(getWebpackExecutable(unifiedClasspath));
             execSpec.args(getArgs().get());
             execSpec.args("--config", getWebpackConfigFile().get().getAsFile().getAbsolutePath());
+            execSpec.setErrorOutput(System.err);
+            execSpec.setStandardOutput(System.out);
         });
     }
 
