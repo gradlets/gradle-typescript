@@ -37,11 +37,11 @@ public final class NodeExec {
     public static void exec(Project project, FileCollection classpath, Action<? super ExecSpec> configure) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         ExecResult execResult = project.exec(execSpec -> {
-            configure.execute(execSpec);
             execSpec.environment("NODE_PATH", toNodePath(classpath));
             execSpec.setIgnoreExitValue(true);
             execSpec.setStandardOutput(output);
             execSpec.setErrorOutput(output);
+            configure.execute(execSpec);
         });
 
         if (execResult.getExitValue() != 0) {
