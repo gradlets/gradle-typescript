@@ -29,7 +29,6 @@ import org.gradle.api.attributes.Category;
 import org.gradle.api.attributes.LibraryElements;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.Directory;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.SourceDirectorySet;
 import org.gradle.api.internal.artifacts.ArtifactAttributes;
 import org.gradle.api.model.ObjectFactory;
@@ -137,16 +136,9 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
                     .attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.MODULE);
         });
 
-        FileCollection projectDependencies = project.getConfigurations()
-                .create(
-                        sourceSet.getCompileConfigurationName() + "forTsconfig",
-                        conf -> conf.extendsFrom(compileConfig))
-                .getIncoming()
-                .artifactView(view -> view.getAttributes()
-                        .attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, sourceScriptDirs)
-                        .attribute(ArtifactAttributes.ARTIFACT_FORMAT, "scripts"))
-                .getArtifacts()
-                .getArtifactFiles();
+        ArtifactView projectArtifacts = compileConfig.getIncoming().artifactView(view -> view.getAttributes()
+                .attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, sourceScriptDirs)
+                .attribute(ArtifactAttributes.ARTIFACT_FORMAT, "scripts"));
 
         project.getTasks().register(sourceSet.getCreateTsConfigTaskName(), CreateTsConfigTask.class, task -> {
             task.setGroup(LifecycleBasePlugin.BUILD_TASK_NAME);
@@ -154,7 +146,7 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
 
             task.getCompileClasspath()
                     .from(externalArtifacts.getArtifacts().getArtifactFiles())
-                    .from(projectDependencies);
+                    .from(projectArtifacts.getArtifacts().getArtifactFiles());
 
             task.getSourceDirectories().set(sourceSet.getSource().getSrcDirs());
             task.getOutputDir().set(sourceSet.getSource().getClassesDirectory().map(Directory::getAsFile));

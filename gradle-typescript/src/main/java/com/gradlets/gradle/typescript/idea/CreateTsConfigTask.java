@@ -23,9 +23,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.MapProperty;
@@ -81,22 +83,14 @@ public abstract class CreateTsConfigTask extends DefaultTask {
     @TaskAction
     public final void generateTsConfig() throws IOException {
         Set<File> externalDependencyFiles = getCompileClasspath()
-                .filter(element -> !element.getAbsolutePath()
-                        .startsWith(
-                                getProject().getRootProject().getProjectDir().getAbsolutePath()))
+                .filter(element -> !isProjectDependency(element))
                 .getFiles();
 
-        Map<String, List<Path>> projectDepsFiles = getCompileClasspath()
-                .filter(element -> element.getAbsolutePath()
-                        .startsWith(
-                                getProject().getRootProject().getProjectDir().getAbsolutePath()))
-                .getFiles()
-                .stream()
+        Map<String, List<Path>> projectDepsFiles = getCompileClasspath().getFiles().stream()
+                .filter(this::isProjectDependency)
                 .map(File::toPath)
-                .map(path ->
-                        getProject().getRootProject().getProjectDir().toPath().relativize(path))
                 .collect(Collectors.groupingBy(
-                        path -> path.getName(0).toString(),
+                        this::getProjectName,
                         Collectors.mapping(Path::toAbsolutePath, Collectors.toUnmodifiableList())));
 
         GFileUtils.parentMkdirs(tsConfig.get().getAsFile());
@@ -113,5 +107,22 @@ public abstract class CreateTsConfigTask extends DefaultTask {
                         externalDependencyFiles,
                         getTypeRoots().getFiles(),
                         getCompilerOptions().get()));
+    }
+
+    private String getProjectName(Path scriptPath) {
+        String projectPath = getRootProjectDir()
+                .relativize(scriptPath.getParent().getParent().getParent())
+                .toString();
+        return Optional.ofNullable(getProject().getRootProject().findProject(projectPath.replace("/", ":")))
+                .map(Project::getName)
+                .orElseThrow();
+    }
+
+    private boolean isProjectDependency(File file) {
+        return file.toPath().startsWith(getRootProjectDir());
+    }
+
+    private Path getRootProjectDir() {
+        return getProject().getRootProject().getProjectDir().toPath();
     }
 }

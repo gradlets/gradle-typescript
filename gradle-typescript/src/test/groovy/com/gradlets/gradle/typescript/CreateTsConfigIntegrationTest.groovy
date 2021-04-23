@@ -57,6 +57,23 @@ class CreateTsConfigIntegrationTest extends IntegrationSpec {
         paths.containsKey('child/*')
     }
 
+    def 'supports nested projects'() {
+        when:
+        buildFile << """
+            dependencies {
+                deps project(':nested:child')
+            }
+        """.stripIndent()
+        addSubproject('nested:child')
+        createFile('nested/child/src/main/typescript.ts')
+
+        then:
+        def result = runTasksSuccessfully('createTsConfig')
+        !result.wasExecuted(':nested:child:compileTypeScript')
+        Map<String, Set<String>> paths = getTsConfigPaths(file('src/main/tsconfig.json'))
+        paths.containsKey('child')
+    }
+
     def 'idea renders all tsconfigs'() {
         when:
         addSubproject("child")
