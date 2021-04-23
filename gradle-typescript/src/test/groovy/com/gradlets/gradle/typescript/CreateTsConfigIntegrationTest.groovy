@@ -32,100 +32,91 @@ class CreateTsConfigIntegrationTest extends IntegrationSpec {
             version '1.0.0'
         }
         '''.stripIndent()
+
+        createFile("src/main/typescript/index.ts")
     }
 
-    def 'idea renders all tsconfigs'() {
-        when:
-        ['b', 'c', 'd'].collect({
-            addSubproject(it)
-            createFile("${it}/src/main/typescript/index.ts")
-        })
-
-        then:
-        def result = runTasksSuccessfully('idea')
-        ['b', 'c', 'd'].collect({
-            result.wasExecuted(":$it:idea")
-            result.wasExecuted(":$it:createTsConfig")
-            result.wasExecuted(":$it:createTsConfigTest")
-            fileExists("$it/src/main/tsconfig.json")
-        })
-    }
-
-    def 'has typeRoots'() {
+    def 'tsconfig includes project and external dependencies'()  {
         when:
         buildFile << """
             dependencies {
-                types 'npm:types/jest:${Versions.JEST_TYPES}'
-            }
-        """.stripIndent()
-        createFile("src/main/typescript/index.ts")
-
-        then:
-        runTasksSuccessfully('idea')
-        file('src/main/tsconfig.json').text.contains('"typeRoots" : [')
-    }
-
-    def 'idea doesnt cause compilation'() {
-        when:
-        buildFile << """
-            dependencies {
-                types 'npm:types/jest:${Versions.JEST_TYPES}'
-            }
-        """.stripIndent()
-        createFile("src/main/typescript/index.ts")
-
-        then:
-        def result = runTasksSuccessfully('idea')
-        result.wasExecuted('createTsConfigTest')
-        !result.wasExecuted('compileTypeScript')
-    }
-
-    def 'includes transitive project dependencies'() {
-        when:
-        addSubproject("first")
-        file("first/src/main/typescript/index.ts") << '''
-            const foo = 3
-        '''.stripIndent()
-        file("first/build.gradle") << """
-            dependencies {
+                deps project(':child')
                 deps 'npm:conjure-client:${Versions.CONJURE_CLIENT}'
             }
         """.stripIndent()
 
-        addSubproject("second")
-        file("second/src/main/typescript/index.ts") << '''
-            const bar = 5
-        '''.stripIndent()
-        file("second/build.gradle") << '''
-            dependencies {
-                deps project(':first')
-            }
-        '''.stripIndent()
+        addSubproject("child")
+        createFile("child/src/main/typescript/index.ts")
 
-        addSubproject("third")
-        file("third/src/main/typescript/index.ts") << '''
-            const baz = 10
-        '''.stripIndent()
-        file("third/src/test/typescript/index.ts") << '''
-            const xyz = 10
-        '''.stripIndent()
-        file("third/build.gradle") << '''
-            dependencies {
-                deps project(':second')
-            }
-        '''.stripIndent()
+        then:
+        def result = runTasksSuccessfully('createTsConfig')
+        !result.wasExecuted('child:compileTypeScript')
+        Map<String, Set<String>> paths = getTsConfigPaths(file('src/main/tsconfig.json'))
+        paths.containsKey('conjure-client')
+        paths.containsKey('child')
+        paths.containsKey('child/*')
+    }
+
+    def 'idea renders all tsconfigs'() {
+        when:
+        addSubproject("child")
+        createFile("child/src/main/typescript/index.ts")
 
         then:
         def result = runTasksSuccessfully('idea')
-        result.wasExecuted(':third:createTsConfig')
-        Map<String, Set<String>> paths = (ObjectMappers.MAPPER.readValue(
-                file('third/src/test/tsconfig.json'), TsConfig.class)
-                .compilerOptions()
-                .get('paths') as Map<String, Set<String>>)
-        paths.containsKey('conjure-client')
-        ['first', 'second', 'third'].forEach {
-            paths.containsKey(it)
-            paths.containsKey(it + "/*")
+        result.wasExecuted('createTsConfig')
+        result.wasExecuted(':child:createTsConfig')
+    }
+
+    def 'tsconfig includes typeRoots'() {
+        when:
+        buildFile << """
+            dependencies {
+                types 'npm:types/jest:${Versions.JEST_TYPES}'
+            }
+        """.stripIndent()
+
+        then:
+        runTasksSuccessfully('createTsconfig')
+        file('src/main/tsconfig.json').text.contains('"typeRoots" : [')
+    }
+
+    def 'includes transitive project dependencies'() {
+        when:
+        buildFile << """
+        dependencies {
+            deps project(':first')
         }
+        """.stripIndent()
+
+        addSubproject("first", """
+        dependencies {
+            deps project(':second')
+        }
+        """.stripIndent())
+        file("first/src/main/typescript/index.ts");
+
+        addSubproject("second", """
+        dependencies {
+            deps 'npm:conjure-client:${Versions.CONJURE_CLIENT}'
+        }
+        """.stripIndent())
+        file("second/src/main/typescript/index.ts");
+
+        then:
+        def result = runTasksSuccessfully('createTsConfig')
+        Map<String, Set<String>> paths = getTsConfigPaths(file('src/main/tsconfig.json'))
+        paths.containsKey('conjure-client')
+        ['first', 'second'].forEach {
+            assert paths.containsKey(it)
+            assert paths.containsKey(it + "/*")
+        }
+    }
+
+    private static Map<String, Set<String>> getTsConfigPaths(File file) throws IOException {
+        return ObjectMappers.MAPPER.readValue(
+                file, TsConfig.class)
+                .compilerOptions()
+                .get('paths') as Map<String, Set<String>>;
     }
 }

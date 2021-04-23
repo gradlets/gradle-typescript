@@ -198,13 +198,15 @@ public class TypeScriptPlugin implements Plugin<Project> {
                         project.getObjects().named(LibraryElements.class, TypeScriptAttributes.PACKAGE_JSON));
         resourcesVariant.artifact(packageJsonArtifact);
 
-        ConfigurationVariantInternal variant = (ConfigurationVariantInternal)
+        ConfigurationVariantInternal sourceVariant = (ConfigurationVariantInternal)
                 configuration.getOutgoing().getVariants().create("source-script-dirs");
-        variant.getAttributes()
+        sourceVariant.getAttributes().attribute(ArtifactAttributes.ARTIFACT_FORMAT, "scripts");
+        sourceVariant
+                .getAttributes()
                 .attribute(
                         LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
                         project.getObjects().named(LibraryElements.class, TypeScriptAttributes.SOURCE_SCRIPT_DIRS));
-        variant.artifactsProvider(() -> mainSourceSet.getSource().getSourceDirectories().getFiles().stream()
+        sourceVariant.artifactsProvider(() -> mainSourceSet.getSource().getSourceDirectories().getFiles().stream()
                 .map(sourceScriptDir -> new LazyPublishArtifact(project.provider(() -> sourceScriptDir)))
                 .collect(Collectors.toUnmodifiableList()));
     }
