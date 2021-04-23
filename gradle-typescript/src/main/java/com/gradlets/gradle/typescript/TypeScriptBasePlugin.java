@@ -138,7 +138,7 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
 
         ArtifactView projectArtifacts = compileConfig.getIncoming().artifactView(view -> view.getAttributes()
                 .attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, sourceScriptDirs)
-                .attribute(ArtifactAttributes.ARTIFACT_FORMAT, "scripts"));
+                .attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.SOURCE_SCRIPT_DIRS));
 
         project.getTasks().register(sourceSet.getCreateTsConfigTaskName(), CreateTsConfigTask.class, task -> {
             task.setGroup(LifecycleBasePlugin.BUILD_TASK_NAME);

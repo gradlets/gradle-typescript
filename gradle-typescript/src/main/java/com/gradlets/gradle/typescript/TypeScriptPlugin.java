@@ -200,7 +200,9 @@ public class TypeScriptPlugin implements Plugin<Project> {
 
         ConfigurationVariantInternal sourceVariant = (ConfigurationVariantInternal)
                 configuration.getOutgoing().getVariants().create("source-script-dirs");
-        sourceVariant.getAttributes().attribute(ArtifactAttributes.ARTIFACT_FORMAT, "scripts");
+        sourceVariant
+                .getAttributes()
+                .attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.SOURCE_SCRIPT_DIRS);
         sourceVariant
                 .getAttributes()
                 .attribute(
