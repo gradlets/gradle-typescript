@@ -113,7 +113,7 @@ public abstract class CreateTsConfigTask extends DefaultTask {
         String projectPath = getRootProjectDir()
                 .relativize(scriptPath.getParent().getParent().getParent())
                 .toString();
-        return Optional.ofNullable(getProject().getRootProject().findProject(projectPath.replace("/", ":")))
+        return Optional.ofNullable(getProject().findProject(":" + projectPath.replace("/", ":")))
                 .map(Project::getName)
                 .orElseThrow();
     }
