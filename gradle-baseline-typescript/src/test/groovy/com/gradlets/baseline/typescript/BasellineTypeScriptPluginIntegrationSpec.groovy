@@ -24,8 +24,7 @@ class BasellineTypeScriptPluginIntegrationSpec extends IntegrationSpec {
         buildFile << """
         buildscript {
             repositories {
-                maven { url 'https://repo1.maven.org/maven2/' }
-                maven { url 'https://palantir.bintray.com/releases'}
+                gradlePluginPortal()
             }
 
             dependencies {

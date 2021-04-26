@@ -98,11 +98,10 @@ class NpmPackageIntegrationSpec extends IntegrationSpec {
         buildFile.text = """
         buildscript {
             repositories {
-                maven { url 'https://repo1.maven.org/maven2/' }
-                maven { url 'https://palantir.bintray.com/releases'}
+                gradlePluginPortal()
             }
             dependencies {
-                classpath 'com.palantir.gradle.consistentversions:gradle-consistent-versions:1.17.3'
+                classpath 'com.palantir.gradle.consistentversions:gradle-consistent-versions:1.26.1'
             }
         }
 

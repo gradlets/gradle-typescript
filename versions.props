@@ -16,5 +16,5 @@ org.junit.jupiter:* = 5.7.1
 org.mockito:* = 3.9.0
 
 # runtime deps
-com.palantir.gradle.consistentversions:gradle-consistent-versions = 1.20.0
+com.palantir.gradle.consistentversions:gradle-consistent-versions = 1.26.1
 
