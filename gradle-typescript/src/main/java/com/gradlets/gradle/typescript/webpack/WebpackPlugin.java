@@ -53,6 +53,8 @@ public final class WebpackPlugin implements Plugin<Project> {
                     task.getWebpackClasspath().set(webpackClasspath);
                     task.getCompileClasspath().set(compileClasspath);
                     task.getWebpackConfigFile().set(webpackExtension.getConfigFile());
+                    task.getSourceFiles()
+                            .from(project.getTasks().getByName(mainSourceSet.getCompileTypeScriptTaskName()));
 
                     task.dependsOn(mainSourceSet.getCompileTypeScriptTaskName());
                 });

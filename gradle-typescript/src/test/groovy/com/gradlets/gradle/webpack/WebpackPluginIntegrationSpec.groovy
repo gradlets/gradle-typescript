@@ -21,7 +21,6 @@ import nebula.test.IntegrationSpec
 
 class WebpackPluginIntegrationSpec extends IntegrationSpec {
 
-
     public static final String WEBPACK_CONFIG = """
         const path = require("path");
         const webpack = require("webpack");
@@ -99,9 +98,18 @@ class WebpackPluginIntegrationSpec extends IntegrationSpec {
         """.stripIndent()
 
         then:
-        runTasks("bundleWebpack")
+        runTasksSuccessfully("bundleWebpack")
         fileExists('build/webpack/bundle.js')
         file('build/webpack/bundle.js').text.contains('FetchBridge')
+
+        when:
+        file('src/main/typescript/index.ts') << """
+        console.log("bar");
+        """.stripIndent()
+
+        then:
+        runTasksSuccessfully("bundleWebpack")
+        file('build/webpack/bundle.js').text.contains('console.log("bar")')
     }
 
     def 'handles project dependencies'() {
