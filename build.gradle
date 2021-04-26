@@ -65,5 +65,11 @@ allprojects {
         options.errorprone.disable 'SafeLoggingExceptionMessageFormat'
     }
 
+    tasks.withType(Test) {
+        testLogging {
+            events 'failed', 'skipped', 'passed'
+        }
+    }
+
     tasks.check.dependsOn javadoc, checkUnusedDependencies
 }
