@@ -29,8 +29,7 @@ class ConjureTypeScriptLocalCodegenPluginIntegrationSpec extends IntegrationSpec
 
             repositories {
                 npm {  url 'https://registry.npmjs.org' }
-                maven { url 'https://repo1.maven.org/maven2/' }
-                maven { url 'https://palantir.bintray.com/releases'}
+                mavenCentral()
                 maven { url 'file://${Paths.get(".").toAbsolutePath()}/src/test/resources/repo' }
             }
 

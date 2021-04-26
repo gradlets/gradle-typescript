@@ -18,14 +18,13 @@ package com.gradlets.baseline.typescript
 
 import nebula.test.IntegrationSpec
 
-class BasellineTypeScriptPluginIntegrationSpec extends IntegrationSpec {
+class BaselineTypeScriptPluginIntegrationSpec extends IntegrationSpec {
 
     def setup() {
         buildFile << """
         buildscript {
             repositories {
-                maven { url 'https://repo1.maven.org/maven2/' }
-                maven { url 'https://palantir.bintray.com/releases'}
+                gradlePluginPortal()
             }
 
             dependencies {
