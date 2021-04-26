@@ -6,7 +6,6 @@ version: 2.1
 jobs:
   circle-all:
     docker: [{ image: 'circleci/openjdk:11-node' }]
-    resource_class: large
     environment:
       CIRCLE_TEST_REPORTS: /home/circleci/junit
       CIRCLE_ARTIFACTS: /home/circleci/artifacts
