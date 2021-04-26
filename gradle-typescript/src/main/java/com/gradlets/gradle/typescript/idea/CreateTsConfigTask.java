@@ -18,6 +18,8 @@ package com.gradlets.gradle.typescript.idea;
 
 import com.gradlets.gradle.typescript.ObjectMappers;
 import com.gradlets.gradle.typescript.TypeScriptConfigs;
+import com.palantir.logsafe.SafeArg;
+import com.palantir.logsafe.exceptions.SafeRuntimeException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -113,9 +115,10 @@ public abstract class CreateTsConfigTask extends DefaultTask {
         String projectPath = getRootProjectDir()
                 .relativize(scriptPath.getParent().getParent().getParent())
                 .toString();
-        return Optional.ofNullable(getProject().findProject(":" + projectPath.replace("/", ":")))
+        String projectName = ":" + projectPath.replace("/", ":");
+        return Optional.ofNullable(getProject().findProject(projectName))
                 .map(Project::getName)
-                .orElseThrow();
+                .orElseThrow(() -> new SafeRuntimeException("Unable to find project", SafeArg.of("name", projectName)));
     }
 
     private boolean isProjectDependency(File file) {
