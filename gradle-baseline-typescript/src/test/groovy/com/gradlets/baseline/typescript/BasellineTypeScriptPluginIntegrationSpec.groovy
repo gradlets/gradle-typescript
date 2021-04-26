@@ -18,7 +18,7 @@ package com.gradlets.baseline.typescript
 
 import nebula.test.IntegrationSpec
 
-class BasellineTypeScriptPluginIntegrationSpec extends IntegrationSpec {
+class BaselineTypeScriptPluginIntegrationSpec extends IntegrationSpec {
 
     def setup() {
         buildFile << """
