@@ -58,15 +58,16 @@ public abstract class WebpackTask extends DefaultTask {
     static TaskProvider<WebpackTask> register(
             Project project,
             String name,
-            WebpackExtension ext,
+            DirectoryProperty outputDir,
+            RegularFileProperty configFile,
             Configuration compileClasspath,
             Configuration webpackClasspath,
             Action<WebpackTask> configure) {
         return project.getTasks().register(name, WebpackTask.class, task -> {
-            task.getOutputDirectory().set(ext.getOutputDir());
+            task.getOutputDirectory().set(outputDir);
             task.getWebpackClasspath().set(webpackClasspath);
             task.getCompileClasspath().set(compileClasspath);
-            task.getWebpackConfigFile().set(ext.getConfigFile());
+            task.getWebpackConfigFile().set(configFile);
             task.getArgs().empty();
             configure.execute(task);
         });

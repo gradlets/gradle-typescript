@@ -49,14 +49,26 @@ public final class WebpackPlugin implements Plugin<Project> {
         WebpackExtension webpackExtension = WebpackExtension.create(project);
 
         TaskProvider<WebpackTask> bundleWebpackTask = WebpackTask.register(
-                project, BUNDLE_WEBPACK_TASK_NAME, webpackExtension, compileClasspath, webpackClasspath, task -> {
+                project,
+                BUNDLE_WEBPACK_TASK_NAME,
+                webpackExtension.getOutputDir(),
+                webpackExtension.getConfigFile(),
+                compileClasspath,
+                webpackClasspath,
+                task -> {
                     task.dependsOn(mainSourceSet.getCompileTypeScriptTaskName());
                     task.getSourceFiles()
                             .from(project.getTasks().getByName(mainSourceSet.getCompileTypeScriptTaskName()));
                 });
 
         WebpackTask.register(
-                project, WEBPACK_DEV_SERVER, webpackExtension, compileClasspath, webpackClasspath, task -> {
+                project,
+                WEBPACK_DEV_SERVER,
+                webpackExtension.getOutputDir(),
+                webpackExtension.getDevServerConfigFile(),
+                compileClasspath,
+                webpackClasspath,
+                task -> {
                     task.getArgs().add("serve");
                 });
 

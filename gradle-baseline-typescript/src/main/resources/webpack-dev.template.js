@@ -35,11 +35,7 @@ module.exports = {
     },
     module: {
         rules: [
-            {
-                test: /\.(ts|js)($|\?)/i,
-                enforce: 'pre',
-                loader: require.resolve('source-map-loader'),
-            },
+            { test: /\.tsx?$/, loader: "ts-loader" },
             {
                 test: /\.s[ac]ss$/i,
                 use: [

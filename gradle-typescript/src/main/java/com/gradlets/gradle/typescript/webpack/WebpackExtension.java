@@ -30,12 +30,14 @@ public class WebpackExtension {
 
     private final Project project;
     private final RegularFileProperty configFile;
+    private final RegularFileProperty devServerConfigFile;
     private final DirectoryProperty outputDir;
 
     @Inject
     public WebpackExtension(Project project) {
         this.project = project;
         this.configFile = project.getObjects().fileProperty();
+        this.devServerConfigFile = project.getObjects().fileProperty();
         this.outputDir = project.getObjects()
                 .directoryProperty()
                 .value(project.getLayout().getBuildDirectory().dir("webpack"));
@@ -45,11 +47,19 @@ public class WebpackExtension {
         return configFile;
     }
 
+    public final RegularFileProperty getDevServerConfigFile() {
+        return devServerConfigFile;
+    }
+
     public final DirectoryProperty getOutputDir() {
         return outputDir;
     }
 
     public final void config(String fileName) {
         configFile.set(project.file(fileName));
+    }
+
+    public final void devServerConfig(String fileName) {
+        devServerConfigFile.set(project.file(fileName));
     }
 }
