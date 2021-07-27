@@ -30,8 +30,8 @@ dependencies {
     implementation 'com.palantir.conjure.java.runtime:conjure-java-jackson-serialization'
     implementation 'com.palantir.sls-packaging:gradle-recommended-product-dependencies'
 
-    testCompile gradleTestKit()
-    testCompile 'com.netflix.nebula:nebula-test'
+    testImplementation gradleTestKit()
+    testImplementation 'com.netflix.nebula:nebula-test'
 
     compileOnly 'org.immutables:value::annotations'
     annotationProcessor 'org.immutables:value'
@@ -52,6 +52,10 @@ gradlePlugin {
             implementationClass = 'com.gradlets.gradle.typescript.conjure.ConjureTypeScriptLocalCodegenPlugin'
         }
     }
+}
+
+tasks.named('processResources').configure {
+    duplicatesStrategy 'include'
 }
 
 tasks.publish.dependsOn tasks.publishPlugins

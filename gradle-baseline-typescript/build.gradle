@@ -27,9 +27,9 @@ dependencies {
     implementation 'com.google.guava:guava'
     implementation 'com.palantir.safe-logging:preconditions'
 
-    testCompile gradleTestKit()
-    testCompile 'com.netflix.nebula:nebula-test'
-    testCompile project(':gradle-typescript')
+    testImplementation gradleTestKit()
+    testImplementation 'com.netflix.nebula:nebula-test'
+    testImplementation project(':gradle-typescript')
 
     compileOnly project(':gradle-typescript')
     compileOnly 'com.palantir.gradle.consistentversions:gradle-consistent-versions'
@@ -55,6 +55,10 @@ gradlePlugin {
             implementationClass = 'com.gradlets.baseline.typescript.BaselineTypeScript'
         }
     }
+}
+
+tasks.named('processResources').configure {
+    duplicatesStrategy 'include'
 }
 
 tasks.publish.dependsOn tasks.publishPlugins

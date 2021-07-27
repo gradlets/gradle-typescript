@@ -115,7 +115,7 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
             task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
             task.setDescription("Compiles " + sourceSet.getName());
             task.getClasspath().from(sourceSet.getCompileClasspath());
-            task.getOutputDir().set(sourceSet.getSource().getClassesDirectory());
+            task.getOutputDir().set(sourceSet.getSource().getDestinationDirectory());
             task.getCompilerOptions().value(typeScriptPluginExtension.getCompilerOptions());
             task.getTypeRoots().from(project.getConfigurations().named(sourceSet.getCompileTypesConfigurationName()));
 
@@ -149,7 +149,8 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
                     .from(projectArtifacts.getArtifacts().getArtifactFiles());
 
             task.getSourceDirectories().set(sourceSet.getSource().getSrcDirs());
-            task.getOutputDir().set(sourceSet.getSource().getClassesDirectory().map(Directory::getAsFile));
+            task.getOutputDir()
+                    .set(sourceSet.getSource().getDestinationDirectory().map(Directory::getAsFile));
             task.getTsConfigName().set(sourceSet.getName());
             task.getCompilerOptions().set(compilerOptions);
             task.getTypeRoots()
@@ -176,9 +177,10 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
     private static void configureOutputDirectoryForSourceSet(
             SourceSet sourceSet, SourceDirectorySet sourceDirectorySet, Project project) {
         String sourceSetChildPath = "scripts/" + sourceSet.getName();
-        sourceDirectorySet.setOutputDir(
-                project.getLayout().getBuildDirectory().dir(sourceSetChildPath).map(Directory::getAsFile));
+        sourceDirectorySet
+                .getDestinationDirectory()
+                .set(project.getLayout().getBuildDirectory().dir(sourceSetChildPath));
         DefaultSourceSetOutput sourceSetOutput = sourceSet.getOutput();
-        sourceSetOutput.addScriptsDirs(sourceDirectorySet::getOutputDir);
+        sourceSetOutput.addScriptsDirs(sourceDirectorySet.getDestinationDirectory());
     }
 }

@@ -22,8 +22,8 @@ apply plugin: 'com.gradle.plugin-publish'
 apply plugin: 'nebula.maven-scm'
 
 dependencies {
-    compile localGroovy()
-    compile gradleApi()
+    implementation localGroovy()
+    implementation gradleApi()
 
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-guava'
@@ -38,8 +38,8 @@ dependencies {
     implementation 'io.undertow:undertow-core'
     implementation 'org.apache.commons:commons-compress'
 
-    testCompile gradleTestKit()
-    testCompile 'com.netflix.nebula:nebula-test'
+    testImplementation gradleTestKit()
+    testImplementation 'com.netflix.nebula:nebula-test'
     testImplementation 'com.github.tomakehurst:wiremock-jre8'
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -68,6 +68,10 @@ gradlePlugin {
             implementationClass = 'com.gradlets.gradle.typescript.TypeScriptPlugin'
         }
     }
+}
+
+tasks.named('processResources').configure {
+    duplicatesStrategy 'include'
 }
 
 tasks.publish.dependsOn tasks.publishPlugins
