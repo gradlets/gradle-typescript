@@ -115,7 +115,7 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
             task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
             task.setDescription("Compiles " + sourceSet.getName());
             task.getClasspath().from(sourceSet.getCompileClasspath());
-            task.getOutputDir().set(sourceSet.getSource().getClassesDirectory());
+            task.getOutputDir().set(sourceSet.getSource().getDestinationDirectory());
             task.getCompilerOptions().value(typeScriptPluginExtension.getCompilerOptions());
             task.getTypeRoots().from(project.getConfigurations().named(sourceSet.getCompileTypesConfigurationName()));
 
@@ -180,6 +180,6 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
                 .getDestinationDirectory()
                 .set(project.getLayout().getBuildDirectory().dir(sourceSetChildPath));
         DefaultSourceSetOutput sourceSetOutput = sourceSet.getOutput();
-        sourceSetOutput.addScriptsDirs(sourceDirectorySet::getOutputDir);
+        sourceSetOutput.addScriptsDirs(sourceDirectorySet.getDestinationDirectory());
     }
 }

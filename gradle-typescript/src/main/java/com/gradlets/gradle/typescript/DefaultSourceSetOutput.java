@@ -16,11 +16,10 @@
 
 package com.gradlets.gradle.typescript;
 
-import java.io.File;
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import javax.inject.Inject;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.internal.file.CompositeFileCollection;
 import org.gradle.api.internal.file.FileCollectionFactory;
 import org.gradle.api.internal.file.FileCollectionInternal;
@@ -52,7 +51,7 @@ public class DefaultSourceSetOutput extends CompositeFileCollection {
         return scriptsDirs;
     }
 
-    public final void addScriptsDirs(Callable<File> scriptsDir) {
+    public final void addScriptsDirs(DirectoryProperty scriptsDir) {
         scriptsDirs.from(scriptsDir);
     }
 
