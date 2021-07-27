@@ -21,8 +21,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.gradle.publish:plugin-publish-plugin:0.14.0'
-        classpath 'com.netflix.nebula:gradle-info-plugin:9.3.0'
+        classpath 'com.gradle.publish:plugin-publish-plugin:0.15.0'
+        classpath 'com.netflix.nebula:gradle-info-plugin:10.0.0'
         classpath 'com.netflix.nebula:nebula-publishing-plugin:17.3.2'
         classpath 'com.palantir.baseline:gradle-baseline-java:4.9.0'
         classpath 'com.palantir.baseline:gradle-junit-reports:4.9.0'
