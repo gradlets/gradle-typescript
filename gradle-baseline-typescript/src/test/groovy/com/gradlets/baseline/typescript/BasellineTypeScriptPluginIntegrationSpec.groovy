@@ -28,7 +28,7 @@ class BaselineTypeScriptPluginIntegrationSpec extends IntegrationSpec {
             }
 
             dependencies {
-                classpath 'com.palantir.gradle.consistentversions:gradle-consistent-versions:1.26.1'
+                classpath 'com.palantir.gradle.consistentversions:gradle-consistent-versions:2.0.0'
             }
         }
 
