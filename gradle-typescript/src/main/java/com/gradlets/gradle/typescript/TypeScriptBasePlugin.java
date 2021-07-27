@@ -176,8 +176,9 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
     private static void configureOutputDirectoryForSourceSet(
             SourceSet sourceSet, SourceDirectorySet sourceDirectorySet, Project project) {
         String sourceSetChildPath = "scripts/" + sourceSet.getName();
-        sourceDirectorySet.setOutputDir(
-                project.getLayout().getBuildDirectory().dir(sourceSetChildPath).map(Directory::getAsFile));
+        sourceDirectorySet
+                .getDestinationDirectory()
+                .set(project.getLayout().getBuildDirectory().dir(sourceSetChildPath));
         DefaultSourceSetOutput sourceSetOutput = sourceSet.getOutput();
         sourceSetOutput.addScriptsDirs(sourceDirectorySet::getOutputDir);
     }
