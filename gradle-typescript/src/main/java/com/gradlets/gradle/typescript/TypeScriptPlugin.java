@@ -81,7 +81,7 @@ public class TypeScriptPlugin implements Plugin<Project> {
             task.setDescription("Runs the unit tests.");
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
             task.setSource(testSourceSet.getSource());
-            task.getOutputDir().set(testSourceSet.getSource().getClassesDirectory());
+            task.getOutputDir().set(testSourceSet.getSource().getDestinationDirectory());
             task.getTsconfigFile().set(testTsconfig.flatMap(CreateTsConfigTask::getTsConfig));
             task.getPreset().set(jestExtension.getPreset());
             task.getClasspath().from(testSourceSet.getCompileClasspath());
