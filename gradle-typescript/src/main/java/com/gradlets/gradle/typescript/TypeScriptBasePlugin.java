@@ -149,7 +149,8 @@ public final class TypeScriptBasePlugin implements Plugin<Project> {
                     .from(projectArtifacts.getArtifacts().getArtifactFiles());
 
             task.getSourceDirectories().set(sourceSet.getSource().getSrcDirs());
-            task.getOutputDir().set(sourceSet.getSource().getClassesDirectory().map(Directory::getAsFile));
+            task.getOutputDir()
+                    .set(sourceSet.getSource().getDestinationDirectory().map(Directory::getAsFile));
             task.getTsConfigName().set(sourceSet.getName());
             task.getCompilerOptions().set(compilerOptions);
             task.getTypeRoots()
