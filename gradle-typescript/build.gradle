@@ -70,6 +70,10 @@ gradlePlugin {
     }
 }
 
+tasks.named('processResources').configure {
+    duplicatesStrategy 'include'
+}
+
 tasks.publish.dependsOn tasks.publishPlugins
 publishPlugins.onlyIf { versionDetails().isCleanTag }
 project.ext.'gradle.publish.key' = System.env["GRADLE_KEY"]
