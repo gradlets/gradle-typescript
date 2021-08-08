@@ -53,9 +53,11 @@ public final class BaselineWebpack implements Plugin<Project> {
                             .set(tsExt.getSourceSets()
                                     .getByName("main")
                                     .getSource()
-                                    .getOutputDir()
+                                    .getDestinationDirectory()
+                                    .file("index.js")
+                                    .get()
+                                    .getAsFile()
                                     .toPath()
-                                    .resolve("index.js")
                                     .toAbsolutePath()
                                     .toString());
                 });
