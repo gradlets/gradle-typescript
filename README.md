@@ -25,7 +25,7 @@ allprojects {
 
     repositories {
         npm {
-            url 'https://registry.npmjs.org/'
+            url 'https://registry.npmjs.org'
         }
     }
 }
