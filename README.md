@@ -21,7 +21,7 @@ buildscript {
 apply plugin: 'com.gradlets.baseline-typescript'
 
 allprojects {
-    apply plugin: 'com.grdlets.typescript'
+    apply plugin: 'com.gradlets.typescript'
 
     repositories {
         npm {
