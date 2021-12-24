@@ -120,6 +120,7 @@ public final class GradleTypeScriptRootIdeaPlugin implements Plugin<Project> {
             doc = dBuilder.newDocument();
             rootElement = doc.createElement("project");
             rootElement.setAttribute("version", "4");
+            doc.appendChild(rootElement);
         }
 
         configure.accept(rootElement);
