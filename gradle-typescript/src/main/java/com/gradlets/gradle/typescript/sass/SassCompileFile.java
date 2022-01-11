@@ -45,12 +45,12 @@ public abstract class SassCompileFile implements WorkAction<SassWorkParameters> 
             Files.asCharSink(getParameters().outputFile().getAsFile().get(), StandardCharsets.UTF_8)
                     .write(output.getCss());
         } catch (IOException e) {
-            log.error("Unable to write css file {}", e);
+            log.error("Unable to write css file", e);
             throw new SafeRuntimeException(
                     "Unable to write css file",
                     SafeArg.of("file", getParameters().outputFile()));
         } catch (CompilationException e) {
-            log.error("Error compiling scss ", e);
+            log.error("Error compiling scss", e);
             throw new SafeRuntimeException(
                     "Unable to compile scss",
                     SafeArg.of("file", getParameters().outputFile()),

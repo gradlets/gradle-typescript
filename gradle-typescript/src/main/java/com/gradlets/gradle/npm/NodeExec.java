@@ -19,6 +19,7 @@ package com.gradlets.gradle.npm;
 import groovy.lang.Closure;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -46,7 +47,8 @@ public final class NodeExec {
 
         if (execResult.getExitValue() != 0) {
             throw new GradleException(String.format(
-                    "Failed with exit code %d. Output:\n%s", execResult.getExitValue(), output.toString()));
+                    "Failed with exit code %d. Output:\n%s",
+                    execResult.getExitValue(), output.toString(StandardCharsets.UTF_8)));
         }
     }
 
