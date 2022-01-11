@@ -19,6 +19,7 @@ package com.gradlets.gradle.typescript.conjure;
 import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -86,7 +87,7 @@ public class ConjureTypeScriptLocalGeneratorTask extends DefaultTask {
         if (execResult.getExitValue() != 0) {
             throw new GradleException(String.format(
                     "Failed to generate TypeScript. Command failed with exit code %d. Output:\n%s",
-                    execResult.getExitValue(), output.toString()));
+                    execResult.getExitValue(), output.toString(StandardCharsets.UTF_8)));
         }
     }
 }
