@@ -1,20 +1,20 @@
-com.fasterxml.jackson.*:* = 2.12.3
-com.github.ben-manes.caffeine:caffeine = 3.0.0
-com.github.tomakehurst:wiremock-jre8 = 2.27.2
-com.google.guava:guava = 30.1.1-jre
-com.netflix.nebula:nebula-test = 10.0.0
-com.palantir.dialogue:* = 1.118.1
-com.palantir.safe-logging:* = 1.14.0
-com.palantir.sls-packaging:* = 5.0.0
-commons-io:commons-io = 2.8.0
+com.fasterxml.jackson.*:* = 2.13.1
+com.github.ben-manes.caffeine:caffeine = 3.0.5
+com.github.tomakehurst:wiremock-jre8 = 2.32.0
+com.google.guava:guava = 31.0.1-jre
+com.netflix.nebula:nebula-test = 10.2.0
+com.palantir.dialogue:* = 3.38.0
+com.palantir.safe-logging:* = 1.20.0
+com.palantir.sls-packaging:* = 7.13.0
+commons-io:commons-io = 2.11.0
 io.bit3:jsass = 5.10.4
-io.undertow:undertow-core = 2.2.7.Final
+io.undertow:undertow-core = 2.2.14.Final
 org.apache.commons:commons-compress = 1.20
 org.assertj:* = 3.19.0
 org.immutables:value = 2.8.8
-org.junit.jupiter:* = 5.7.1
-org.mockito:* = 3.9.0
+org.junit.jupiter:* = 5.8.2
+org.mockito:* = 3.11.1
 
 # runtime deps
-com.palantir.gradle.consistentversions:gradle-consistent-versions = 2.0.0
+com.palantir.gradle.consistentversions:gradle-consistent-versions = 2.5.0
 
