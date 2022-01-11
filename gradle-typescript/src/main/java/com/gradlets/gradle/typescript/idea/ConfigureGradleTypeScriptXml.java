@@ -30,9 +30,6 @@ public final class ConfigureGradleTypeScriptXml {
 
     static void configureTypeScriptCompiler(Element rootElement, Path tscLocation) {
         Element tscComponent = matchOrCreateChild(rootElement, "component", Map.of("name", "TypeScriptCompiler"));
-        Element forProjectsWithoutConfig =
-                matchOrCreateChild(tscComponent, "option", Map.of("name", "enableServiceForProjectsWithoutConfig"));
-        forProjectsWithoutConfig.setAttribute("value", "false");
         Element versionType = matchOrCreateChild(tscComponent, "option", Map.of("name", "versionType"));
         versionType.setAttribute("value", "SERVICE_DIRECTORY");
         Element tscDirectory = matchOrCreateChild(tscComponent, "option", Map.of("name", "typeScriptServiceDirectory"));

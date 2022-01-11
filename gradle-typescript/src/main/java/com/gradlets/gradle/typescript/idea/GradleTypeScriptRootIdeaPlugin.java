@@ -93,7 +93,7 @@ public final class GradleTypeScriptRootIdeaPlugin implements Plugin<Project> {
             return;
         }
         createOrUpdateIdeaXmlFile(
-                project.file(".idea/typescript-compiler.xml"),
+                project.file(".idea/compiler.xml"),
                 node -> ConfigureGradleTypeScriptXml.configureTypeScriptCompiler(
                         node, tscLocationFromSubprojects(project)));
     }
@@ -101,8 +101,7 @@ public final class GradleTypeScriptRootIdeaPlugin implements Plugin<Project> {
     private static void createOrUpdateIdeaXmlFile(File configurationFile, Consumer<Element> configure) {
         DocumentBuilder dBuilder;
         try {
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            dBuilder = dbFactory.newDocumentBuilder();
+            dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             throw new RuntimeException("Unable to build xml parser");
         }
@@ -120,6 +119,7 @@ public final class GradleTypeScriptRootIdeaPlugin implements Plugin<Project> {
             doc = dBuilder.newDocument();
             rootElement = doc.createElement("project");
             rootElement.setAttribute("version", "4");
+            doc.appendChild(rootElement);
         }
 
         configure.accept(rootElement);
