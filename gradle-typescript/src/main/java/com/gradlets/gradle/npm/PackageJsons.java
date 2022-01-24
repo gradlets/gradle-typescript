@@ -18,6 +18,7 @@ package com.gradlets.gradle.npm;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.hash.Hashing;
+import com.google.common.io.BaseEncoding;
 import com.gradlets.gradle.typescript.ObjectMappers;
 import com.palantir.conjure.java.lib.Bytes;
 import com.palantir.logsafe.exceptions.SafeRuntimeException;
@@ -59,7 +60,9 @@ final class PackageJsons {
         String tarballName = String.format("%s-%s.tgz", packageName, packageVersion);
         String tarballSuffix = String.format("%s/-/%s", packageName, tarballName);
         String shasum = Hashing.sha1().hashBytes(artifactBytes).toString();
-        String integrity = Hashing.sha512().hashBytes(artifactBytes).toString();
+        String integrity = "sha512-"
+                + BaseEncoding.base64()
+                        .encode(Hashing.sha512().hashBytes(artifactBytes).asBytes());
         mutablePackageJson.put(
                 "dist", Map.of("shasum", shasum, "integrity", integrity, "tarball", repositoryUrl + tarballSuffix));
         return NpmPackageRoot.builder()
