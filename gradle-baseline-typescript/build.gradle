@@ -41,7 +41,10 @@ dependencies {
 }
 
 test {
-    environment 'NODE_OPTIONS', '--openssl-legacy-provider'
+    // Replace with real node version check
+    if (!System.env.CI) {
+        environment 'NODE_OPTIONS', '--openssl-legacy-provider'
+    }
 }
 
 pluginBundle {
