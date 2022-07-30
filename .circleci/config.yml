@@ -5,7 +5,7 @@
 version: 2.1
 jobs:
   circle-all:
-    docker: [{ image: 'cimg/openjdk:17-node' }]
+    docker: [{ image: 'cimg/openjdk:17.0-node' }]
     environment:
       CIRCLE_TEST_REPORTS: /home/circleci/junit
       CIRCLE_ARTIFACTS: /home/circleci/artifacts
@@ -49,7 +49,7 @@ jobs:
           paths: [ project, .gradle/init.gradle ]
 
   publish:
-    docker: [{ image: 'cimg/openjdk:17-node' }]
+    docker: [{ image: 'cimg/openjdk:17.0-node' }]
     environment:
       CIRCLE_TEST_REPORTS: /home/circleci/junit
       CIRCLE_ARTIFACTS: /home/circleci/artifacts
