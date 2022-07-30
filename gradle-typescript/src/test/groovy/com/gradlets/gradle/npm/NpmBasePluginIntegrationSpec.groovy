@@ -21,8 +21,6 @@ import nebula.test.IntegrationSpec
 import spock.lang.Unroll
 
 class NpmBasePluginIntegrationSpec extends IntegrationSpec {
-    private static final List<String> GRADLE_TEST_VERSIONS = ['6.8', '6.7.1']
-
     def setup() {
         buildFile << """
         allprojects {
@@ -47,11 +45,7 @@ class NpmBasePluginIntegrationSpec extends IntegrationSpec {
         """.stripIndent()
     }
 
-    @Unroll
-    def '#gradleTestVersion loads simple packages'() {
-        setup:
-        gradleVersion = gradleTestVersion
-
+    def 'loads simple packages'() {
         when:
         buildFile << """
         dependencies {
@@ -68,16 +62,9 @@ class NpmBasePluginIntegrationSpec extends IntegrationSpec {
         matchingFile("web-streams-polyfill-2.0.6/web-streams-polyfill").any {
             result.standardOutput.find(it)
         }
-
-        where:
-        gradleTestVersion << GRADLE_TEST_VERSIONS
     }
 
-    @Unroll
-    def '#gradleTestVersion loads scoped packages'() {
-        setup:
-        gradleVersion = gradleTestVersion
-
+    def 'loads scoped packages'() {
         when:
         buildFile << """
         dependencies {
@@ -91,9 +78,6 @@ class NpmBasePluginIntegrationSpec extends IntegrationSpec {
         matchingFile("gradlets/test-service-api-0.0.1/@gradlets/test-service-api").any {
             result.standardOutput.find(it)
         }
-
-        where:
-        gradleTestVersion << GRADLE_TEST_VERSIONS
     }
 
     def 'package bin are set to executable'() {

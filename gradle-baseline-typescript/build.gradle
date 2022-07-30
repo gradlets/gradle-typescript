@@ -40,6 +40,10 @@ dependencies {
     annotationProcessor 'org.immutables:value'
 }
 
+test {
+    environment 'NODE_OPTIONS', '--openssl-legacy-provider'
+}
+
 pluginBundle {
     website = 'https://gradlets.com'
     vcsUrl = 'https://github.com/gradlets/gradle-typescript'

@@ -52,7 +52,7 @@ public abstract class WebpackTask extends DefaultTask {
         ConfigurableFileCollection unifiedClasspath = getProject().getObjects().fileCollection();
         unifiedClasspath.from(getWebpackClasspath().get(), getCompileClasspath().get());
         NodeExec.exec(getProject(), unifiedClasspath, execSpec -> {
-            execSpec.executable(getWebpackExecutable(getWebpackClasspath().get()));
+            execSpec.executable(getWebpackExecutable(unifiedClasspath));
             execSpec.args("--config", getWebpackConfigFile().get().getAsFile().getAbsolutePath());
         });
     }

@@ -20,8 +20,6 @@ import com.gradlets.gradle.Versions
 import nebula.test.IntegrationSpec
 
 class NodeExecIntegrationSpec extends IntegrationSpec {
-    private static final List<String> GRADLE_TEST_VERSIONS = ['6.8', '6.7.1']
-
     File executable
     def setup() {
         executable = file('executable.js')
@@ -69,10 +67,7 @@ class NodeExecIntegrationSpec extends IntegrationSpec {
         !failure.standardError.contains("UNREACHABLE")
     }
 
-    def '#gradleTestVersion executes resolves dependencies'() {
-        setup:
-        gradleVersion = gradleTestVersion
-
+    def 'executes resolves dependencies'() {
         when:
         buildFile << """
         dependencies {
@@ -84,15 +79,9 @@ class NodeExecIntegrationSpec extends IntegrationSpec {
 
         then:
         runTasksSuccessfully('doExec')
-
-        where:
-        gradleTestVersion << GRADLE_TEST_VERSIONS
     }
 
-    def '#gradleTestVersion executes resolves scoped dependencies'() {
-        setup:
-        gradleVersion = gradleTestVersion
-
+    def 'executes resolves scoped dependencies'() {
         when:
         buildFile << """
         dependencies {
@@ -103,8 +92,5 @@ class NodeExecIntegrationSpec extends IntegrationSpec {
 
         then:
         runTasksSuccessfully('doExec')
-
-        where:
-        gradleTestVersion << GRADLE_TEST_VERSIONS
     }
 }

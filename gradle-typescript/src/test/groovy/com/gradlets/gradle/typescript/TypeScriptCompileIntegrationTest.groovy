@@ -21,8 +21,6 @@ import nebula.test.IntegrationSpec
 import spock.lang.Unroll
 
 class TypeScriptCompileIntegrationTest extends IntegrationSpec {
-    private static final List<String> GRADLE_TEST_VERSIONS = ['6.8', '6.7.1']
-
     def setup() {
         buildFile << """
         allprojects {
@@ -101,11 +99,7 @@ class TypeScriptCompileIntegrationTest extends IntegrationSpec {
         result.wasExecuted(':foo:compileTestTypeScript')
     }
 
-    @Unroll
-    def '#gradleTestVersion compiles typescript with external dependencies'() {
-        setup:
-        gradleVersion = gradleTestVersion
-
+    def 'compiles typescript with external dependencies'() {
         when:
         buildFile << """
         dependencies {
@@ -121,16 +115,9 @@ class TypeScriptCompileIntegrationTest extends IntegrationSpec {
         runTasksSuccessfully("compileTypeScript")
         fileExists("build/scripts/main/foo.js")
         fileExists("build/scripts/main/foo.d.ts")
-
-        where:
-        gradleTestVersion << GRADLE_TEST_VERSIONS
     }
 
-    @Unroll
-    def '#gradleTestVersion compiles typescript with scoped external dependencies'() {
-        setup:
-        gradleVersion = gradleTestVersion
-
+    def 'compiles typescript with scoped external dependencies'() {
         when:
         buildFile << """
         dependencies {
@@ -148,9 +135,6 @@ class TypeScriptCompileIntegrationTest extends IntegrationSpec {
         runTasksSuccessfully("compileTypeScript")
         fileExists("build/scripts/main/foo.js")
         fileExists("build/scripts/main/foo.d.ts")
-
-        where:
-        gradleTestVersion << GRADLE_TEST_VERSIONS
     }
 
     def "caches previous compilation"() {
