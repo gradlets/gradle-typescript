@@ -54,7 +54,10 @@ tasks.withType(JavaCompile) {
 }
 
 test {
-    environment 'NODE_OPTIONS', '--openssl-legacy-provider'
+    // Replace with real node version check
+    if (!System.env.CI) {
+        environment 'NODE_OPTIONS', '--openssl-legacy-provider'
+    }
     jvmArgs '--add-opens', 'java.base/java.util=ALL-UNNAMED'
 }
 
