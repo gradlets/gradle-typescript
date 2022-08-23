@@ -16,13 +16,13 @@
 plugins {
     id 'idea'
     id 'com.markelliot.versions' version '0.5.0'
-    id 'com.palantir.baseline' version '4.151.0'
+    id 'com.palantir.baseline' version '4.157.0'
     id 'com.palantir.consistent-versions' version '2.11.0'
     id 'com.palantir.git-version' version '0.15.0'
-    id 'com.palantir.java-format' version '2.25.0'
+    id 'com.palantir.java-format' version '2.26.0'
     id 'nebula.maven-publish' version '18.4.0' apply false
     id 'net.ltgt.errorprone' version '2.0.2' apply false
-    id 'org.inferred.processors' version '3.6.0' apply false
+    id 'org.inferred.processors' version '3.7.0' apply false
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.6'
     id 'com.gradle.plugin-publish' version '1.0.0'
 }
