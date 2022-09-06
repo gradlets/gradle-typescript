@@ -1,9 +1,9 @@
-com.fasterxml.jackson.*:* = 2.13.3
+com.fasterxml.jackson.*:* = 2.13.4
 com.github.ben-manes.caffeine:caffeine = 3.0.5
 com.github.tomakehurst:wiremock-jre8 = 2.33.2
 com.google.guava:guava = 31.1-jre
 com.netflix.nebula:nebula-test = 10.2.0
-com.palantir.dialogue:* = 3.65.0
+com.palantir.dialogue:* = 3.66.0
 com.palantir.safe-logging:* = 3.0.0
 com.palantir.sls-packaging:* = 7.23.0
 commons-io:commons-io = 2.11.0
