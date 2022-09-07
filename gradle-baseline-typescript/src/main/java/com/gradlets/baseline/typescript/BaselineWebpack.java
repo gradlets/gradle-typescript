@@ -63,7 +63,7 @@ public final class BaselineWebpack implements Plugin<Project> {
                                     .toPath()
                                     .toAbsolutePath()
                                     .toString());
-                    task.getSassEntryPoint().set(tsExt.);
+//                    task.getSassEntryPoint().set(tsExt.);
                 });
 
         project.getTasks().withType(WebpackTask.class, bundleWebpack -> {
