@@ -22,7 +22,7 @@ import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 
 public class DefaultTypeScriptPluginExtension implements TypeScriptPluginExtension {
-    private static final String DEFAULT_TYPESCRIPT_VERSION = "4.2.3";
+    private static final String DEFAULT_TYPESCRIPT_VERSION = "4.7.4";
     private static final String EXTENSION_NAME = "typeScript";
 
     private final SourceSetContainer sourceSets;

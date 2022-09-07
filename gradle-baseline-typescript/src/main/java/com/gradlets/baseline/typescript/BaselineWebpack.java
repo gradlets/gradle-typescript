@@ -71,19 +71,14 @@ public final class BaselineWebpack implements Plugin<Project> {
 
     private static void configureWebpackConfiguration(Project project, TypeScriptPluginExtension tsExt) {
         Configuration webpack = project.getConfigurations().getByName(WebpackPlugin.WEBPACK_CONFIGURATION_NAME);
-        project.getDependencies().add(WebpackPlugin.WEBPACK_CONFIGURATION_NAME, "npm:source-map-loader:2.0.1");
-        project.getDependencies().add(WebpackPlugin.WEBPACK_CONFIGURATION_NAME, "npm:webpack:5.21.2");
-        project.getDependencies().add(WebpackPlugin.WEBPACK_CONFIGURATION_NAME, "npm:webpack-cli:4.5.0");
+        project.getDependencies().add(WebpackPlugin.WEBPACK_CONFIGURATION_NAME, "npm:source-map-loader:4.0.0");
+        project.getDependencies().add(WebpackPlugin.WEBPACK_CONFIGURATION_NAME, "npm:webpack:5.74.0");
+        project.getDependencies().add(WebpackPlugin.WEBPACK_CONFIGURATION_NAME, "npm:webpack-cli:4.7.0");
 
         webpack.getDependencyConstraints()
-                .add(project.getDependencies().getConstraints().create("npm:types/eslint:7.2.6"));
+                .add(project.getDependencies().getConstraints().create("npm:types/eslint:8.4.5"));
         webpack.getDependencyConstraints()
-                .add(project.getDependencies().getConstraints().create("npm:types/node:14.6.2"));
-        webpack.getDependencyConstraints()
-                .add(project.getDependencies().getConstraints().create("npm:to-arraybuffer:1.0.1"));
-        webpack.getDependencyConstraints()
-                .add(project.getDependencies().getConstraints().create("npm:wrappy:1.0.2"));
-        webpack.resolutionStrategy(resolutionStrategy -> resolutionStrategy.force("npm:source-map:0.6.1"));
+                .add(project.getDependencies().getConstraints().create("npm:types/node:18.6.2"));
         project.afterEvaluate(_unused -> {
             project.getDependencies()
                     .add(

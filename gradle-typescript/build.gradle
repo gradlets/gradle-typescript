@@ -53,6 +53,14 @@ tasks.withType(JavaCompile) {
     options.errorprone.disable 'Slf4jLogsafeArgs'
 }
 
+test {
+    // Replace with real node version check
+    if (!System.env.CI) {
+        environment 'NODE_OPTIONS', '--openssl-legacy-provider'
+    }
+    jvmArgs '--add-opens', 'java.base/java.util=ALL-UNNAMED'
+}
+
 pluginBundle {
     website = 'https://gradlets.com'
     vcsUrl = 'https://github.com/gradlets/gradle-typescript'
