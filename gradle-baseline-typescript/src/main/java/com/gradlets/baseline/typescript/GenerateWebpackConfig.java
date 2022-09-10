@@ -19,17 +19,12 @@ package com.gradlets.baseline.typescript;
 import com.google.common.io.Resources;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-<<<<<<< HEAD
 import java.nio.file.Files;
-=======
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
->>>>>>> 72c406c (dev)
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
@@ -50,12 +45,11 @@ public abstract class GenerateWebpackConfig extends DefaultTask {
 
     @TaskAction
     public final void generate() throws IOException {
-        List<String> entryPoints =
-                        Stream.of(getTsEntryPoint().get(), getSassEntryPoint().get()).filter(file -> )
-            Files.writeString(
-                    getOutputFile().get().getAsFile().toPath(),
-                    getWebpackConfig(getWebpackOutputDir().get(), getEntryPoint().get()),
-                    StandardCharsets.UTF_8);
+        Files.writeString(
+                getOutputFile().get().getAsFile().toPath(),
+                getWebpackConfig(
+                        getWebpackOutputDir().get(), List.of(getTsEntryPoint().get())),
+                StandardCharsets.UTF_8);
     }
 
     private static String getWebpackConfig(String outputDir, List<String> entryPoints) {

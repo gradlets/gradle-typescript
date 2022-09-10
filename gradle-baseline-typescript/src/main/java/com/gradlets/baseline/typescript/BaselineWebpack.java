@@ -58,12 +58,10 @@ public final class BaselineWebpack implements Plugin<Project> {
                                     .getSource()
                                     .getDestinationDirectory()
                                     .file("index.js")
-                                    .get()
-                                    .getAsFile()
-                                    .toPath()
-                                    .toAbsolutePath()
-                                    .toString());
-//                    task.getSassEntryPoint().set(tsExt.);
+                                    .map(file -> file.getAsFile()
+                                            .toPath()
+                                            .toAbsolutePath()
+                                            .toString()));
                 });
 
         project.getTasks().withType(WebpackTask.class, bundleWebpack -> {
