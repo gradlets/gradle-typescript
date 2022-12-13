@@ -24,8 +24,8 @@ import com.gradlets.gradle.typescript.TypeScriptPluginExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition;
 import org.gradle.api.attributes.Usage;
-import org.gradle.api.internal.artifacts.ArtifactAttributes;
 import org.gradle.api.tasks.TaskProvider;
 
 public final class WebpackPlugin implements Plugin<Project> {
@@ -81,7 +81,9 @@ public final class WebpackPlugin implements Plugin<Project> {
         webpackClasspath.setVisible(false);
         webpackClasspath.setCanBeConsumed(false);
         webpackClasspath.setCanBeResolved(true);
-        webpackClasspath.getAttributes().attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.MODULE);
+        webpackClasspath
+                .getAttributes()
+                .attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, TypeScriptAttributes.MODULE);
 
         return webpackClasspath;
     }
