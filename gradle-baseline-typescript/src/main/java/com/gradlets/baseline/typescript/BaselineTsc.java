@@ -43,6 +43,6 @@ public final class BaselineTsc implements Plugin<Project> {
                         .put("suppressImplicitAnyIndexErrors", true)
                         .put("module", "es6")
                         .put("target", "es6")
-                        .build());
+                        .buildOrThrow());
     }
 }

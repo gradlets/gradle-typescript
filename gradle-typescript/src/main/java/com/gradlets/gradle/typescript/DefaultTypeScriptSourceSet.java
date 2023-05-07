@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.SourceDirectorySet;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.util.GUtil;
+import org.gradle.util.internal.GUtil;
 
 @SuppressWarnings("DesignForExtension")
 public abstract class DefaultTypeScriptSourceSet implements SourceSet {

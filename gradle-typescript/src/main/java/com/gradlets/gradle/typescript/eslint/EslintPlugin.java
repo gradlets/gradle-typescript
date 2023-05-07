@@ -27,7 +27,7 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
-import org.gradle.util.GUtil;
+import org.gradle.util.internal.GUtil;
 
 public class EslintPlugin implements Plugin<Project> {
 

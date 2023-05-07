@@ -19,7 +19,10 @@ package com.gradlets.gradle.typescript.conjure;
 import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -34,7 +37,6 @@ import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
-import org.gradle.util.GFileUtils;
 
 @CacheableTask
 public class ConjureTypeScriptLocalGeneratorTask extends DefaultTask {
@@ -61,18 +63,18 @@ public class ConjureTypeScriptLocalGeneratorTask extends DefaultTask {
     }
 
     @TaskAction
-    public final void generate() {
+    public final void generate() throws IOException {
         File definitionFile = getInputFile().getAsFile().get();
-        File outputDir = outputDirectory.getAsFile().get();
+        Path outputDir = outputDirectory.getAsFile().get().toPath();
 
-        GFileUtils.deleteDirectory(outputDir);
+        Files.delete(outputDir);
         getProject().mkdir(outputDir);
 
         List<String> generateCommand = ImmutableList.of(
                 getExecutablePath().get().getAbsolutePath(),
                 "generate",
                 definitionFile.getAbsolutePath(),
-                outputDir.getAbsolutePath(),
+                outputDir.toAbsolutePath().toString(),
                 "--rawSource");
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();

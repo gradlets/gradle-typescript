@@ -70,7 +70,7 @@ public abstract class PackageJsonTask extends DefaultTask {
                         Maps.transformValues(
                                 getDirectDependencies(getDependencies().get()), version -> VERSION_PREFIX + version))
                 .put("_id", getPackageName().get() + "@" + getProject().getVersion())
-                .build();
+                .buildOrThrow();
         ObjectMappers.MAPPER.writeValue(getOutputFile().get().getAsFile(), packageJson);
     }
 

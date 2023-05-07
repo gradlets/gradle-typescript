@@ -65,3 +65,4 @@ project.ext.'gradle.publish.secret' = System.env["GRADLE_SECRET"]
 
 // Confused about requirement to have gradle-typescript as an implementation dependency
 tasks.checkUnusedDependenciesMain.enabled = false
+tasks.checkUnusedDependenciesTest.enabled = false

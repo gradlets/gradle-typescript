@@ -20,6 +20,7 @@ import com.gradlets.gradle.npm.NodeExec;
 import com.gradlets.gradle.typescript.ObjectMappers;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -31,7 +32,6 @@ import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.util.GFileUtils;
 
 public abstract class EslintTask extends SourceTask {
 
@@ -60,15 +60,15 @@ public abstract class EslintTask extends SourceTask {
 
     @TaskAction
     public final void lint() throws IOException {
-        File configFile = new File(getTemporaryDir(), ".eslintrc.json");
-        GFileUtils.parentMkdirs(configFile);
-        ObjectMappers.MAPPER.writeValue(configFile, createEslintRc());
+        Path configFile = getTemporaryDir().toPath().resolve(".eslintrc.json");
+        Files.createDirectories(configFile.getParent());
+        ObjectMappers.MAPPER.writeValue(configFile.toFile(), createEslintRc());
 
         ConfigurableFileCollection unifiedClasspath = getProject().getObjects().fileCollection();
         unifiedClasspath.from(getPluginClasspath(), getCompileClasspath());
         NodeExec.exec(getProject(), getPluginClasspath(), execSpec -> {
             execSpec.setExecutable(getEslintExecutable(getPluginClasspath()));
-            execSpec.args("--config", configFile.getAbsolutePath());
+            execSpec.args("--config", configFile.toAbsolutePath().toString());
             execSpec.args(
                     getSource().getFiles().stream().map(File::getAbsolutePath).collect(Collectors.toSet()));
 

@@ -18,7 +18,10 @@ package com.gradlets.gradle.typescript;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.gradle.api.GradleException;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
@@ -36,7 +39,6 @@ import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
-import org.gradle.util.GFileUtils;
 
 public class TypeScriptCompile extends SourceTask {
 
@@ -81,10 +83,10 @@ public class TypeScriptCompile extends SourceTask {
         Configuration tscConfiguration = getProject().getConfigurations().detachedConfiguration(tscDependency);
         tscConfiguration.getAttributes().attribute(ArtifactAttributes.ARTIFACT_FORMAT, "module");
 
-        File configFile = new File(getTemporaryDir(), "tsconfig.json");
-        GFileUtils.parentMkdirs(configFile);
+        Path configFile = getTemporaryDir().toPath().resolve("tsconfig.json");
+        Files.createDirectories(configFile.getParent());
         ObjectMappers.MAPPER.writeValue(
-                configFile,
+                configFile.toFile(),
                 TypeScriptConfigs.createGradleTsConfig(
                         outputDir.get().getAsFile().toPath(),
                         getSource().getFiles(),
@@ -110,12 +112,15 @@ public class TypeScriptCompile extends SourceTask {
         return new File(tscConfiguration.getSingleFile(), "bin/tsc").getAbsolutePath();
     }
 
-    private void logAllDependantPackages(Set<File> dependencies) {
+    @SuppressWarnings("StreamResourceLeak")
+    private void logAllDependantPackages(Set<File> dependencies) throws IOException {
         for (File dependency : dependencies) {
             if (dependency.exists()) {
                 getProject()
                         .getLogger()
-                        .info("Dependency exists with files {}", GFileUtils.listFiles(dependency, null, true));
+                        .info(
+                                "Dependency exists with files {}",
+                                Files.list(dependency.toPath()).collect(Collectors.toList()));
             } else {
                 getProject().getLogger().info("Missing dependency {}", dependency.getAbsolutePath());
             }

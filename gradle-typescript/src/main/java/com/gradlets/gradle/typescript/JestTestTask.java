@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import com.gradlets.gradle.npm.NodeExec;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +39,6 @@ import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.util.GFileUtils;
 
 public abstract class JestTestTask extends SourceTask {
     @Input
@@ -58,19 +58,19 @@ public abstract class JestTestTask extends SourceTask {
     abstract MapProperty<String, Object> getCompilerOptions();
 
     @TaskAction
-    public final void exec() {
-        File configFile = new File(getTemporaryDir(), "jestConfig.json");
-        GFileUtils.parentMkdirs(configFile);
+    public final void exec() throws IOException {
+        Path configFile = getTemporaryDir().toPath().resolve("jestConfig.json");
+        Files.createDirectories(configFile.getParent());
 
         try {
-            ObjectMappers.MAPPER.writeValue(configFile, createJestConfig());
+            ObjectMappers.MAPPER.writeValue(configFile.toFile(), createJestConfig());
         } catch (IOException e) {
             throw new RuntimeException("Failed to write config", e);
         }
 
         NodeExec.exec(getProject(), getClasspath(), execSpec -> {
             execSpec.setExecutable(getJestExecutable(getClasspath()));
-            execSpec.args("--config", configFile.getAbsolutePath());
+            execSpec.args("--config", configFile.toAbsolutePath().toString());
         });
     }
 
@@ -100,6 +100,6 @@ public abstract class JestTestTask extends SourceTask {
                 "testMatch",
                 getSource().getFiles().stream().map(File::getAbsolutePath).collect(Collectors.toList()));
         builder.putAll(getCompilerOptions().get());
-        return builder.build();
+        return builder.buildOrThrow();
     }
 }
