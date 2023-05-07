@@ -15,16 +15,16 @@
  */
 plugins {
     id 'idea'
-    id 'com.markelliot.versions' version '0.6.0'
-    id 'com.palantir.baseline' version '4.161.0'
-    id 'com.palantir.consistent-versions' version '2.11.0'
-    id 'com.palantir.git-version' version '0.15.0'
-    id 'com.palantir.java-format' version '2.26.0'
+    id 'com.markelliot.versions' version '0.43.0'
+    id 'com.palantir.baseline' version '5.7.0'
+    id 'com.palantir.consistent-versions' version '2.12.0'
+    id 'com.palantir.git-version' version '3.0.0'
+    id 'com.palantir.java-format' version '2.30.0'
     id 'nebula.maven-publish' version '18.4.0' apply false
-    id 'net.ltgt.errorprone' version '2.0.2' apply false
+    id 'net.ltgt.errorprone' version '3.1.0' apply false
     id 'org.inferred.processors' version '3.7.0' apply false
-    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.6'
-    id 'com.gradle.plugin-publish' version '1.0.0'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.7'
+    id 'com.gradle.plugin-publish' version '1.2.0'
 }
 
 apply plugin: 'com.palantir.consistent-versions'
