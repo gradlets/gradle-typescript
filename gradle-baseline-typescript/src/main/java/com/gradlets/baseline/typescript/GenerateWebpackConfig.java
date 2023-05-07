@@ -39,16 +39,11 @@ public abstract class GenerateWebpackConfig extends DefaultTask {
     abstract RegularFileProperty getOutputFile();
 
     @TaskAction
-    public final void generate() {
-        try {
-            Files.writeString(
-                    getOutputFile().get().getAsFile().toPath(),
-                    getWebpackConfig(
-                            getWebpackOutputDir().get(), getEntryPoint().get()),
-                    StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public final void generate() throws IOException {
+        Files.writeString(
+                getOutputFile().get().getAsFile().toPath(),
+                getWebpackConfig(getWebpackOutputDir().get(), getEntryPoint().get()),
+                StandardCharsets.UTF_8);
     }
 
     private static String getWebpackConfig(String outputDir, String entryPoint) {
