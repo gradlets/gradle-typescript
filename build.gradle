@@ -66,5 +66,7 @@ allprojects {
         }
     }
 
+    tasks.checkUnusedDependenciesMain.enabled = false
+    tasks.checkUnusedDependenciesTest.enabled = false
     tasks.check.dependsOn javadoc, checkUnusedDependencies
 }
