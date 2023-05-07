@@ -41,7 +41,7 @@ public final class BaselineLintPlugin implements Plugin<Project> {
                                         .put("tabWidth", 4)
                                         .put("trailingComma", "all")
                                         .put("arrowParens", "avoid")
-                                        .build()));
+                                        .buildOrThrow()));
     }
 
     private static void addLintDependencies(Project project) {

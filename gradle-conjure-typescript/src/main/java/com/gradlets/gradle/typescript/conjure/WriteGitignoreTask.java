@@ -16,13 +16,15 @@
 
 package com.gradlets.gradle.typescript.conjure;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.util.GFileUtils;
 
 public class WriteGitignoreTask extends DefaultTask {
     private final RegularFileProperty outputFile = getProject().getObjects().fileProperty();
@@ -39,7 +41,7 @@ public class WriteGitignoreTask extends DefaultTask {
     }
 
     @TaskAction
-    public final void compileFiles() {
-        GFileUtils.writeFile(contents.get(), getOutputFile().getAsFile().get());
+    public final void compileFiles() throws IOException {
+        Files.writeString(getOutputFile().getAsFile().get().toPath(), contents.get(), StandardCharsets.UTF_8);
     }
 }

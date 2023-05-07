@@ -24,7 +24,7 @@ import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.ExternalModuleDependency;
 import org.gradle.api.artifacts.repositories.ArtifactRepository;
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository;
-import org.gradle.api.internal.artifacts.ArtifactAttributes;
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition;
 import org.gradle.api.internal.plugins.DslObject;
 
 public class NpmBasePlugin implements Plugin<Project> {
@@ -32,8 +32,10 @@ public class NpmBasePlugin implements Plugin<Project> {
     public final void apply(Project project) {
         NpmExtension npmExtension = project.getObjects().newInstance(NpmExtension.class);
         project.getDependencies().registerTransform(NpmArtifactTransformAction.class, variantTransform -> {
-            variantTransform.getFrom().attribute(ArtifactAttributes.ARTIFACT_FORMAT, "tgz");
-            variantTransform.getTo().attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.MODULE);
+            variantTransform.getFrom().attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "tgz");
+            variantTransform
+                    .getTo()
+                    .attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, TypeScriptAttributes.MODULE);
         });
         new DslObject(project.getRepositories()).getConvention().getPlugins().put("npm", npmExtension);
 
@@ -50,9 +52,9 @@ public class NpmBasePlugin implements Plugin<Project> {
 
     public static Configuration createConfiguration(ConfigurationContainer configurations, String configurationName) {
         return configurations.create(configurationName, conf -> {
-            // Specify we consume modules so that that we properly apply the artifact transformer from tgz -> module
-            conf.attributes(attributeContainer ->
-                    attributeContainer.attribute(ArtifactAttributes.ARTIFACT_FORMAT, TypeScriptAttributes.MODULE));
+            // Specify we consume modules so that we properly apply the artifact transformer from tgz -> module
+            conf.attributes(attributeContainer -> attributeContainer.attribute(
+                    ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, TypeScriptAttributes.MODULE));
 
             // TODO(forozco): instead of adding dependencies with "dependencies" create an extension that performs the
             conf.getDependencies().whenObjectAdded(dependency -> {

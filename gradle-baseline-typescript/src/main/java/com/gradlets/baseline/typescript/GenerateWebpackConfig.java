@@ -19,13 +19,13 @@ package com.gradlets.baseline.typescript;
 import com.google.common.io.Resources;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.util.GFileUtils;
 
 public abstract class GenerateWebpackConfig extends DefaultTask {
 
@@ -39,10 +39,11 @@ public abstract class GenerateWebpackConfig extends DefaultTask {
     abstract RegularFileProperty getOutputFile();
 
     @TaskAction
-    public final void generate() {
-        GFileUtils.writeFile(
+    public final void generate() throws IOException {
+        Files.writeString(
+                getOutputFile().get().getAsFile().toPath(),
                 getWebpackConfig(getWebpackOutputDir().get(), getEntryPoint().get()),
-                getOutputFile().get().getAsFile());
+                StandardCharsets.UTF_8);
     }
 
     private static String getWebpackConfig(String outputDir, String entryPoint) {

@@ -84,8 +84,8 @@ public final class TypeScriptConfigs {
                                         .addAll(typeRoots)
                                         .build()))
                                 .putAll(expandPathsWithWildcards(projectDependencies))
-                                .build())
-                .build();
+                                .buildOrThrow())
+                .buildOrThrow();
     }
 
     private static Map<String, List<String>> getClassPathAsPaths(Set<File> dependencies) {
@@ -112,7 +112,7 @@ public final class TypeScriptConfigs {
                                 .map(Path::toString)
                                 .flatMap(t -> Stream.of(t + "/*", t))
                                 .collect(Collectors.toUnmodifiableList()))))
-                .build();
+                .buildOrThrow();
     }
 
     private static void checkValidOptions(Map<String, Object> rawOptions) {

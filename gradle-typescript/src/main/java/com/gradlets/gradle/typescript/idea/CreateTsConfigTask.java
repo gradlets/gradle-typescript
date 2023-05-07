@@ -22,6 +22,7 @@ import com.palantir.logsafe.SafeArg;
 import com.palantir.logsafe.exceptions.SafeRuntimeException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,6 @@ import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.util.GFileUtils;
 
 public abstract class CreateTsConfigTask extends DefaultTask {
     private final Property<String> tsConfigName =
@@ -95,8 +95,8 @@ public abstract class CreateTsConfigTask extends DefaultTask {
                         this::getProjectName,
                         Collectors.mapping(Path::toAbsolutePath, Collectors.toUnmodifiableList())));
 
-        GFileUtils.parentMkdirs(tsConfig.get().getAsFile());
         File tsConfigFile = tsConfig.getAsFile().get();
+        Files.createDirectories(tsConfigFile.toPath().getParent());
         ObjectMappers.MAPPER.writeValue(
                 tsConfigFile,
                 TypeScriptConfigs.createTsConfigForIntellij(

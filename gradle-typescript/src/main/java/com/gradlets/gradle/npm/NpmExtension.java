@@ -18,7 +18,6 @@ package com.gradlets.gradle.npm;
 
 import com.gradlets.gradle.typescript.shim.IvyPatterns;
 import com.gradlets.gradle.typescript.shim.NpmArtifactoryShim;
-import groovy.lang.Closure;
 import java.nio.file.Paths;
 import java.util.Optional;
 import javax.inject.Inject;
@@ -28,7 +27,6 @@ import org.gradle.api.artifacts.repositories.IvyArtifactRepository;
 import org.gradle.api.internal.artifacts.BaseRepositoryFactory;
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.util.ConfigureUtil;
 
 public class NpmExtension {
     static final String NPM_REPO_DEFAULT_NAME = "npm";
@@ -73,10 +71,6 @@ public class NpmExtension {
         ivyRepository.setUrl(npmArtifactRepository.getUrl());
         repositories.addLast(ivyRepository);
         return npmArtifactRepository;
-    }
-
-    public final NpmArtifactRepository npm(Closure<? super NpmArtifactRepository> closure) {
-        return npm(ConfigureUtil.configureUsing(closure));
     }
 
     public final NpmArtifactRepository npm(Action<? super NpmArtifactRepository> action) {
