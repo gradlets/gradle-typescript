@@ -35,7 +35,8 @@ class WebpackPluginIntegrationSpec extends IntegrationSpec {
             },
             output: {
                 path: path.resolve(__dirname, 'build/webpack'),
-                filename: "bundle.js"
+                filename: "bundle.js",
+                hashFunction: "xxhash64"
             },
             target: "node"
         };
