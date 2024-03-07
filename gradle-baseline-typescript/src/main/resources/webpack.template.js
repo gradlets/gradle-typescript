@@ -30,6 +30,7 @@ module.exports = {
     output: {
         path: __OUTPUT_DIR__,
         filename: "bundle.js",
+        hashFunction: "xxhash64",
         library: "[name]"
     },
     module: {
