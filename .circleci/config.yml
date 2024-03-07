@@ -7,7 +7,6 @@ jobs:
   circle-all:
     docker: [{ image: 'cimg/openjdk:17.0-node' }]
     environment:
-      NODE_OPTIONS: --openssl-legacy-provider
       CIRCLE_TEST_REPORTS: /home/circleci/junit
       CIRCLE_ARTIFACTS: /home/circleci/artifacts
     steps:
@@ -50,7 +49,6 @@ jobs:
   publish:
     docker: [{ image: 'cimg/openjdk:17.0-node' }]
     environment:
-      NODE_OPTIONS: --openssl-legacy-provider
       CIRCLE_TEST_REPORTS: /home/circleci/junit
       CIRCLE_ARTIFACTS: /home/circleci/artifacts
     steps:
